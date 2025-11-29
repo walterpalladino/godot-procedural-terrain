@@ -1,7 +1,6 @@
 shader_type spatial;
 
-render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_burley, specular_schlick_ggx;
-
+render_mode vertex_lighting, depth_draw_opaque, cull_back, diffuse_burley, specular_schlick_ggx;
 
 group_uniforms general;
 uniform float smoothness : hint_range(0.0, 1.0, 0.1) = 0.5f;

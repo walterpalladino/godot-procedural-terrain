@@ -24,7 +24,7 @@ glow_enabled = true
 
 [sub_resource type="Curve" id="Curve_ahm53"]
 
-[sub_resource type="Resource" id="Resource_jab1t"]
+[sub_resource type="Resource" id="Resource_k87h1"]
 script = ExtResource("3_aj58p")
 layers_size = 3
 
@@ -50,7 +50,7 @@ shadow_enabled = true
 [node name="Terrain" type="Node3D" parent="."]
 script = ExtResource("2_ahm53")
 terrain_data_folder = "res://assets/terrain-generator/terrain-layered/data"
-terrain_chunk_size = 1024
+terrain_lod = 8
 terrain_height_scale = 96.0
 terrain_mask = 2
 terrain_mask_margin_offset = 16
@@ -63,8 +63,8 @@ terrain_layer_textures_rotate = true
 terraces = 8
 fractal_octaves = 3
 soft_exp = 1.59
-terrain_data = SubResource("Resource_jab1t")
-shader_script = "uid://bnw3cn78u10v3"
+terrain_data = SubResource("Resource_k87h1")
+shader_script = "uid://mi5le6202ucr"
 heightmap_file = "uid://dbtc3771uvapw"
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
@@ -80,4 +80,4 @@ mesh = SubResource("PlaneMesh_efl0w")
 surface_material_override/0 = ExtResource("6_jab1t")
 
 [node name="TestPlayer" parent="." instance=ExtResource("7_hwnm2")]
-transform = Transform3D(-0.8677654, 0, -0.496974, 0, 1, 0, 0.496974, 0, -0.8677654, -432.46964, 80, -275.79236)
+transform = Transform3D(-0.8677654, 0, -0.496974, 0, 1, 0, 0.496974, 0, -0.8677654, 232.72794, 80, 389.72632)

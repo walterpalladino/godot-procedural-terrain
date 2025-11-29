@@ -178,7 +178,7 @@ func import_terrain():
 
 	for z in range(chunks_qty):
 		for x in range(chunks_qty):
-			generate_chunk_mesh(noise_map, Vector2i(x, z), terrain_chunk_size, terrain_lod)
+			generate_chunk_mesh(noise_map, chunks_qty, Vector2i(x, z), terrain_chunk_size, terrain_lod)
 
 	
 
@@ -241,8 +241,7 @@ func generate_terrain() :
 	
 	for z in range(chunks_qty):
 		for x in range(chunks_qty):
-			generate_chunk_mesh(noise_map, Vector2i(x, z), terrain_chunk_size, terrain_lod)
-
+			generate_chunk_mesh(noise_map, chunks_qty, Vector2i(x, z), terrain_chunk_size, terrain_lod)
 
 
 func generate_heightmap() -> PackedFloat32Array:
@@ -262,7 +261,7 @@ func generate_heightmap() -> PackedFloat32Array:
 	return noise_map
 
 
-func generate_chunk_mesh(noise_map : PackedFloat32Array, chunk_id : Vector2i, chunk_size : int, lod : int):
+func generate_chunk_mesh(noise_map : PackedFloat32Array, chunks_qty : int, chunk_id : Vector2i, chunk_size : int, lod : int):
 
 	print("---------------------")
 	print("generate_chunk_mesh")
@@ -293,12 +292,13 @@ func generate_chunk_mesh(noise_map : PackedFloat32Array, chunk_id : Vector2i, ch
 	meshinstance.name = "Chunk-%02d-%02d" % [chunk_id.x, chunk_id.y]
 	
 	#	Configure Terrain Material
-	#var instance_material = terrain_material.duplicate()
 	var instance_material : ShaderMaterial = ShaderMaterial.new()
 	instance_material.shader = load(shader_script)
+
+	var terrain_layers_offset : Vector2 = Vector2(chunk_id.x, chunk_id.y)
+	terrain_layers_offset /= float(chunks_qty)
+	instance_material.set_shader_parameter("terrain_layers_offset", terrain_layers_offset)
 	
-	#terrain_material.set_shader_parameter("terrain_heightmap", terrain_data_folder + "/" + terrain_heightmap_file_name)
-	#terrain_material.set_shader_parameter("terrain_height_scale", )
 	for l in terrain_layers.size():
 		textures.append(terrain_layers[l].texture)
 	instance_material.set_shader_parameter("terrain_textures", textures)
@@ -308,23 +308,14 @@ func generate_chunk_mesh(noise_map : PackedFloat32Array, chunk_id : Vector2i, ch
 
 	for l in terrain_layers.size():
 		scales.append(terrain_layers[l].tile_scale)
-#		var parameter_name : String = "terrain_textures_tile_scale[{0}]".format({"0":l})
-#		print(parameter_name)
-#		terrain_material.set_shader_parameter(parameter_name, terrain_layers[l].tile_scale)
 	instance_material.set_shader_parameter("terrain_textures_tile_scale", scales)
-	
 	
 	for l in terrain_layers.size():
 		normals.append(terrain_layers[l].normal)
 	instance_material.set_shader_parameter("terrain_textures_normals", normals)
 	
-
-	#terrain_material.set_shader_parameter("terrain_texture_normal_size", )
-	#terrain_material.set_shader_parameter("terrain_textures_normals_scale", scales)
-	
 	instance_material.set_shader_parameter("terrain_layers_weights", layer_weights)
 	instance_material.set_shader_parameter("terrain_layers_weights_size", terrain_layers.size())
-
 
 	if terrain_cliff:
 		instance_material.set_shader_parameter("cliff_enabled", terrain_cliff.enabled)
@@ -334,7 +325,6 @@ func generate_chunk_mesh(noise_map : PackedFloat32Array, chunk_id : Vector2i, ch
 		instance_material.set_shader_parameter("cliff_texture_scale", terrain_cliff.texture_scale)
 
 		instance_material.set_shader_parameter("cliff_layer_weights", cliffs_weights)
-
 
 	if terrain_stain:
 		instance_material.set_shader_parameter("stain_texture", terrain_stain.texture)
@@ -347,9 +337,6 @@ func generate_chunk_mesh(noise_map : PackedFloat32Array, chunk_id : Vector2i, ch
 	
 	meshinstance.set_surface_override_material(0, instance_material)
 	
-	#textures.clear()
-	#scales.clear()
-	#normals.clear()
 	#
 	if create_colliders:
 		add_collider(meshinstance)
@@ -379,18 +366,11 @@ func generate_splatmap() :
 	splatmap_data.resize(terrain_data.terrain_size * terrain_data.terrain_size * terrain_data.layers_size)
 	
 	var splat : PackedFloat32Array = []
-	#splat.resize(layers.Length + (cliffs.enabled ? 1 : 0) + (stain.enabled ? 1 : 0) ]
 
 	for z in terrain_data.terrain_size:
 		for x in terrain_data.terrain_size:
 
 			splat.resize(terrain_data.layers_size)
-			#var steepness : float = _get_steepness_at_point(x, z)
-			#print(steepness)
-			#if cliffs.enabled && steepness >= cliffs.minAngle
-			#if cliffs.enabled && steepness >= cliffs.minAngle
-				#splat[cliffs.textureIndex] = 1.0
-			#else
 
 			var terrain_height : float = _get_height_at(x, z)
 			
@@ -413,12 +393,6 @@ func generate_splatmap() :
 					this_height_end += this_noise * terrain_layer_blend
 
 				if terrain_height >= this_height_start && terrain_height <= this_height_end :
-					#	Overlapping with the previous layer?
-					#if terrain_height >= prev_end_height:
-						#splat[i] = 1.0			
-					#else:
-						#splat[i] = 1.0 - (prev_end_height - terrain_height) / (prev_end_height - this_height_start)
-						#print(splat[i])
 					splat[i] = 1.0
 
 					if terrain_height > next_start_height:
@@ -474,11 +448,6 @@ func _get_height_at(world_x : float, world_z : float) -> float:
 	
 func _get_steepness_at(world_x : float, world_z : float) -> float:
 
-#	var x : float = world_x / terrain_data.terrain_size
-#	var z : float = world_z / terrain_data.terrain_size
-
-#	return terrain_data.get_steepness_at(x, z)
-
 	if world_x < 0:
 		world_x = 0
 	if world_x >= terrain_size - 1 :
@@ -492,20 +461,13 @@ func _get_steepness_at(world_x : float, world_z : float) -> float:
 	var slope_x : float = _get_height_at(world_x + 1, world_z) - _get_height_at(world_x, world_z)
 	var slope_z : float = _get_height_at(world_x, world_z + 1) - _get_height_at(world_x, world_z)
 	
-	#slope_x *= terrain_height_scale
-	#slope_z *= terrain_height_scale
-	
-	#var steepness : float = slope_x * slope_x + slope_z * slope_z
-	#steepness = sqrt(steepness)	
-	#steepness = rad_to_deg(atan(steepness))
-
 	# Scale differences based on terrain size
 	var normal : Vector3 = Vector3(-slope_x, 1.0, slope_z)
 	normal = normal.normalized()
 	
 	var steepness = acos(normal.dot(Vector3.UP))
 	steepness =  rad_to_deg(steepness)
-				
+	
 	return abs(steepness)
 
 

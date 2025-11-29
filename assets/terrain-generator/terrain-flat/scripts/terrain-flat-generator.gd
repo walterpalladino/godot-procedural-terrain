@@ -197,7 +197,6 @@ func generate_chunk_mesh(noise_map : PackedFloat32Array, chunk_id : Vector2i, ch
 		terrain_height, 
 		chunk_size, 
 		chunk_id, 
-		false,
 		terrain_lod, 
 		) 
 	
@@ -239,8 +238,7 @@ func generate_chunk_mesh(noise_map : PackedFloat32Array, chunk_id : Vector2i, ch
 
 
 
-
-func generate_mesh(noise_map : PackedFloat32Array, terrain_size : int, terrain_offset : Vector2, terrain_height : float, chunk_size : int, chunk_id : Vector2, smooth_faces : bool, lod : int) -> ArrayMesh:
+func generate_mesh(noise_map : PackedFloat32Array, terrain_size : int, terrain_offset : Vector2, terrain_height : float, chunk_size : int, chunk_id : Vector2, lod : int) -> ArrayMesh:
 	
 	var array_mesh = ArrayMesh.new()
 	var surface_tool = SurfaceTool.new()
@@ -256,22 +254,14 @@ func generate_mesh(noise_map : PackedFloat32Array, terrain_size : int, terrain_o
 
 			#var y = n.get_noise_2d(x * noise_offset, z * noise_offset) * terrain_height
 			var y = noise_map[x * lod + chunk_id.x * chunk_size + (z * lod + chunk_id.y * chunk_size) * (terrain_size + 1)]
-			
-#			#	Set the UV coordinates
-#			var uv = Vector2()
-#			uv.x = inverse_lerp(0, terrain_size, x * lod)
-#			uv.y = inverse_lerp(0, terrain_size, z * lod)
-
-#			surface_tool.set_uv(uv)
-			
+						
 			#	Set the vertex coordinates
 			var vertex_position = Vector3(x, y, z)
 			vertex_position.x = vertex_position.x * lod + terrain_offset.x + chunk_id.x * chunk_size
 			vertex_position.y = vertex_position.y * terrain_height
 			vertex_position.z = vertex_position.z * lod + terrain_offset.y + chunk_id.y * chunk_size
 
-			if !smooth_faces:
-				surface_tool.set_smooth_group(-1)
+			surface_tool.set_smooth_group(-1)
 				
 			var color : Color = get_color_at(vertex_position)
 			surface_tool.set_color(color)
@@ -294,7 +284,6 @@ func generate_mesh(noise_map : PackedFloat32Array, terrain_size : int, terrain_o
 		vert_idx += 1
 		
 	surface_tool.generate_normals()
-#	surface_tool.generate_tangents()
 	
 	#var arrays = surface_tool.commit_to_arrays()
 	#var importer_mesh = ImporterMesh.new()
