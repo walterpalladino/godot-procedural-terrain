@@ -24,7 +24,7 @@ glow_enabled = true
 
 [sub_resource type="Curve" id="Curve_ahm53"]
 
-[sub_resource type="Resource" id="Resource_k87h1"]
+[sub_resource type="Resource" id="Resource_jab1t"]
 script = ExtResource("3_aj58p")
 layers_size = 3
 
@@ -63,7 +63,7 @@ terrain_layer_textures_rotate = true
 terraces = 8
 fractal_octaves = 3
 soft_exp = 1.59
-terrain_data = SubResource("Resource_k87h1")
+terrain_data = SubResource("Resource_jab1t")
 shader_script = "uid://mi5le6202ucr"
 heightmap_file = "uid://dbtc3771uvapw"
 
