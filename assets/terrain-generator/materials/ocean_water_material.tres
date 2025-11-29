@@ -1,0 +1,46 @@
+[gd_resource type="ShaderMaterial" load_steps=8 format=3 uid="uid://bv0xi4l6lsf32"]
+
+[ext_resource type="Shader" uid="uid://v6pcteorimrb" path="res://assets/godot-shaders/shaders/water/standard_water/water_shader.gdshader" id="1_4lm4f"]
+[ext_resource type="Texture2D" uid="uid://c1q5i27s1nfgl" path="res://assets/godot-shaders/shaders/water/low_poly_water/textures/uvFoam.jpg" id="2_oa7ud"]
+[ext_resource type="Texture2D" uid="uid://clm5ibv20r0we" path="res://assets/godot-shaders/shaders/water/standard_water/textures/Water01_foam_mask.png" id="3_nordl"]
+[ext_resource type="Texture2D" uid="uid://1ttpaxrs6cxr" path="res://assets/godot-shaders/shaders/water/standard_water/textures/water-normal.png" id="4_586mv"]
+[ext_resource type="Texture2D" uid="uid://b5tvs0xtj48k3" path="res://assets/godot-shaders/shaders/water/standard_water/textures/wave_normals_1.jpeg" id="5_ngeb8"]
+[ext_resource type="Texture2D" uid="uid://d2lhv2ys8p7c6" path="res://assets/godot-shaders/shaders/water/low_poly_water/textures/tiling-perlin-noise.png" id="6_gmvue"]
+[ext_resource type="Texture2D" uid="uid://efw8wh3hyefd" path="res://assets/godot-shaders/shaders/water/low_poly_water/textures/caustic-v3.jpg" id="7_nordl"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_4lm4f")
+shader_parameter/color_deep = Color(0.019607844, 0.3764706, 0.4745098, 1)
+shader_parameter/color_shallow = Color(0.03529412, 0.5803922, 0.5686275, 1)
+shader_parameter/beers_law = 0.2
+shader_parameter/depth_offset = 2.98
+shader_parameter/metallic = 0.0
+shader_parameter/roughness = 0.2000000095
+shader_parameter/specular = 0.8
+shader_parameter/opacity = 0.50000002375
+shader_parameter/wave = ExtResource("6_gmvue")
+shader_parameter/texture_normal = ExtResource("4_586mv")
+shader_parameter/texture_normal2 = ExtResource("5_ngeb8")
+shader_parameter/normal_texture_scale = 8.0
+shader_parameter/normal_texture_strength = 0.6
+shader_parameter/wave_direction = Vector2(20, 20)
+shader_parameter/wave_direction2 = Vector2(-10, 5)
+shader_parameter/noise_scale = 10.0
+shader_parameter/height_scale = 0.24
+shader_parameter/wave_texture_enabled = true
+shader_parameter/wave_texture_speed = Vector2(-20, -20)
+shader_parameter/wave_texture = ExtResource("7_nordl")
+shader_parameter/wave_texture_scale = 4.0
+shader_parameter/wave_texture_strength = 2.0
+shader_parameter/riples = ExtResource("3_nordl")
+shader_parameter/riples_velocity = Vector2(0.03, 0.03)
+shader_parameter/riples_scale = 32.0
+shader_parameter/riples_strength = 0.17200000817
+shader_parameter/enable_foam = true
+shader_parameter/foam_speed = Vector2(0.08, 0.08)
+shader_parameter/foam_amount = 0.05
+shader_parameter/edge_scale = 0.5
+shader_parameter/foam_color = Color(0.84313726, 0.98039216, 0.9607843, 1)
+shader_parameter/foam_texture = ExtResource("2_oa7ud")
+shader_parameter/foam_tiling = Vector2(2, 2)

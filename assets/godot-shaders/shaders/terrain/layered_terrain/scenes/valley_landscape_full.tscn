@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://457h5ra776wx"]
+
+[ext_resource type="PackedScene" uid="uid://kkh45db434iv" path="res://assets/godot-shaders/models/terrain/Valley_Landscape_Full.fbx" id="1_y41qs"]
+[ext_resource type="Material" uid="uid://cx87mg30rd41a" path="res://assets/godot-shaders/shaders/terrain/layered_terrain/materials/valley_material.tres" id="2_ol041"]
+[ext_resource type="Material" uid="uid://bxm4eemqnn5kc" path="res://assets/godot-shaders/shaders/water/placid_water/materials/placid_water_material.tres" id="3_jmmx5"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_qt1vh"]
+size = Vector2(1000, 1000)
+center_offset = Vector3(-500, 16, 500)
+
+[node name="Valley_Landscape_Full" instance=ExtResource("1_y41qs")]
+
+[node name="Valley_Landscape_Full" parent="." index="0"]
+surface_material_override/0 = ExtResource("2_ol041")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -517.168, 0, 0)
+visible = false
+mesh = SubResource("PlaneMesh_qt1vh")
+surface_material_override/0 = ExtResource("3_jmmx5")

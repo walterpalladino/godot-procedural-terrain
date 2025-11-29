@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="TerrainCliff" load_steps=4 format=3 uid="uid://iaikdkcqf2lc"]
+
+[ext_resource type="Script" uid="uid://c8sgvb6uxefhe" path="res://assets/terrain-generator/terrain-layered/scripts/terrain_cliff.gd" id="1_2oepg"]
+[ext_resource type="Texture2D" uid="uid://chcoc6b1565bi" path="res://assets/cartoon-texture-pack/ROCKS/ROCKS_Cliff/Textures/Rocks_Cliff_A_Normal.png" id="1_n8826"]
+[ext_resource type="Texture2D" uid="uid://caajiok8o4kyd" path="res://assets/cartoon-texture-pack/ROCKS/ROCKS_Cliff/Textures/Rocks_Cliff_A_Basecolor_A.png" id="2_b4tka"]
+
+[resource]
+script = ExtResource("1_2oepg")
+enabled = true
+minimum_steepness = 55.0
+texture = ExtResource("2_b4tka")
+normal = ExtResource("1_n8826")
+texture_scale = 48.0
+metadata/_custom_type_script = "uid://c8sgvb6uxefhe"

@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://baxojuev5t28"]
+
+[ext_resource type="Material" uid="uid://crlh6k7ik7ins" path="res://assets/terrain-generator/materials/simple_water.tres" id="1_aopyt"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_atgwo"]
+size = Vector2(2048, 2048)
+subdivide_width = 1024
+subdivide_depth = 1024
+
+[node name="Water" type="MeshInstance3D"]
+mesh = SubResource("PlaneMesh_atgwo")
+surface_material_override/0 = ExtResource("1_aopyt")

@@ -1,0 +1,67 @@
+[gd_scene load_steps=12 format=3 uid="uid://dwxw3dc2qb8ux"]
+
+[ext_resource type="Material" uid="uid://ysy4gepk5boc" path="res://assets/godot-shaders/shaders/sky/materials/animated_sky_material.tres" id="1_rf8rv"]
+[ext_resource type="Script" uid="uid://br3yhbol5gumd" path="res://assets/terrain-generator/terrain-textured/scripts/terrain-generator.gd" id="2_63eqp"]
+[ext_resource type="Material" uid="uid://cugq7xyf6g1s4" path="res://assets/terrain-generator/terrain-textured/materials/generic_terrain_material.tres" id="4_53hhl"]
+[ext_resource type="PackedScene" uid="uid://baxojuev5t28" path="res://assets/terrain-generator/prefabs/ocean-shore.tscn" id="5_t5dg8"]
+[ext_resource type="Material" uid="uid://kmhjhlbsxbnk" path="res://assets/godot-shaders/shaders/water/low_poly_water/materials/low_poly_water_material.tres" id="6_1xkp2"]
+[ext_resource type="PackedScene" uid="uid://pce66adtnuqk" path="res://assets/terrain-generator/prefabs/test_player.tscn" id="7_qxj87"]
+
+[sub_resource type="Sky" id="Sky_8t6e2"]
+sky_material = ExtResource("1_rf8rv")
+
+[sub_resource type="Environment" id="Environment_fb7q5"]
+background_mode = 2
+sky = SubResource("Sky_8t6e2")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="Curve" id="Curve_4ny01"]
+_data = [Vector2(0.00238095, 0), 0.0, 0.0, 0, 0, Vector2(0.457143, 0.178643), 0.299152, 0.299152, 0, 0, Vector2(0.85, 0.438434), 1.44126, 1.44126, 0, 0, Vector2(1, 0.942269), 0.226911, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_7wscl"]
+height = 128.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_efl0w"]
+size = Vector2(2048, 2048)
+subdivide_width = 2048
+subdivide_depth = 2048
+center_offset = Vector3(2.08165e-12, 9, 2.08165e-12)
+
+[node name="TestTerrain" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_fb7q5")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+light_energy = 0.421
+shadow_enabled = true
+
+[node name="Terrain" type="Node3D" parent="."]
+script = ExtResource("2_63eqp")
+terrain_size = 1024
+terrain_height = 64
+terrain_offset = Vector2(-512, -512)
+terrain_mask_margin_offset = 16
+terrain_mask_custom_curve = SubResource("Curve_4ny01")
+default_material = ExtResource("4_53hhl")
+soft_exp = 1.59
+create_colliders = true
+heightmap_file = "uid://dm3euq35qc52c"
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 256, 64, 256)
+mesh = SubResource("CylinderMesh_7wscl")
+
+[node name="Water" parent="." instance=ExtResource("5_t5dg8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 9, 2.08165e-12)
+
+[node name="Low Poly Water" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("PlaneMesh_efl0w")
+surface_material_override/0 = ExtResource("6_1xkp2")
+
+[node name="TestPlayer" parent="." instance=ExtResource("7_qxj87")]
+transform = Transform3D(-0.8677654, 0, -0.496974, 0, 1, 0, 0.496974, 0, -0.8677654, -143.22217, 80, -275.79236)

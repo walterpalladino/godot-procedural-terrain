@@ -1,0 +1,43 @@
+[gd_resource type="ShaderMaterial" load_steps=7 format=3 uid="uid://cugq7xyf6g1s4"]
+
+[ext_resource type="Shader" uid="uid://bto665tbddorn" path="res://assets/godot-shaders/shaders/terrain/layered_terrain/terrain.gdshader" id="1_uxra2"]
+[ext_resource type="Texture2D" uid="uid://d2thepoogm8v7" path="res://assets/handpainted-grass-and-ground-textures/Textures/Grass/Grass_swamp_dark/Grass_swamp_dark_down.png" id="2_dlwr4"]
+[ext_resource type="Texture2D" uid="uid://j4rfclmsbi0m" path="res://assets/handpainted-grass-and-ground-textures/Textures/Dirt/dirt_desatured_rocks/dirt_desatured_rocks_down.png" id="3_tat1q"]
+[ext_resource type="Texture2D" uid="uid://0qxpx85444hf" path="res://assets/handpainted-grass-and-ground-textures/Textures/Dirt/dirt_lighted/dirt_lighted_down.png" id="4_jj0sn"]
+[ext_resource type="Texture2D" uid="uid://b1eq8v7vbevgc" path="res://assets/handpainted-grass-and-ground-textures/Textures/Grass/Grass_normal/Grass_normal_down.png" id="6_uxra2"]
+[ext_resource type="Texture2D" uid="uid://db6hpmr7yh7uo" path="res://assets/handpainted-grass-and-ground-textures/Textures/Grass/Grass_lighted/Grass_lighted_down.png" id="8_uxra2"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_uxra2")
+shader_parameter/smoothness = 0.0
+shader_parameter/layer_blend = 0.5000000074506
+shader_parameter/normal_strength = 2.12
+shader_parameter/make_flat = false
+shader_parameter/layer_1_texture = ExtResource("3_tat1q")
+shader_parameter/layer_1_color = Color(0.79607844, 0.7294118, 0.6509804, 1)
+shader_parameter/layer_1_texture_scale = 0.5
+shader_parameter/layer1_rotate_texture = true
+shader_parameter/layer_2_texture = ExtResource("4_jj0sn")
+shader_parameter/layer_2_color = Color(1, 1, 1, 1)
+shader_parameter/layer_2_texture_scale = 0.5
+shader_parameter/layer_2_start = 8.0
+shader_parameter/layer2_rotate_texture = true
+shader_parameter/layer_3_texture = ExtResource("8_uxra2")
+shader_parameter/layer_3_color = Color(0.8039216, 0.92941177, 0.5803922, 1)
+shader_parameter/layer_3_texture_scale = 0.5
+shader_parameter/layer_3_start = 12.0
+shader_parameter/layer3_rotate_texture = true
+shader_parameter/layer_4_texture = ExtResource("6_uxra2")
+shader_parameter/layer_4_color = Color(0.7731517, 0.81107014, 0.58163583, 1)
+shader_parameter/layer_4_texture_scale = 0.5
+shader_parameter/layer_4_start = 18.0
+shader_parameter/layer4_rotate_texture = true
+shader_parameter/cliff_texture = ExtResource("2_dlwr4")
+shader_parameter/cliff_color = Color(0.67629623, 0.5164088, 0.34859532, 1)
+shader_parameter/cliff_texture_scale = 8.0
+shader_parameter/cliff_presence = 0.66
+shader_parameter/cliff_blend = 1.6
+shader_parameter/stain_texture_color = Color(1, 1, 1, 1)
+shader_parameter/stain_texture_scale = 1.0
+shader_parameter/stain_texture_strength = 0.0

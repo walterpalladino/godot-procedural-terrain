@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TerrainLayer" load_steps=3 format=3 uid="uid://ssoiimmxhlt2"]
+
+[ext_resource type="Script" uid="uid://cmmmumqpffhur" path="res://assets/terrain-generator/terrain-layered/scripts/terrain-layer.gd" id="1_18slh"]
+[ext_resource type="Texture2D" uid="uid://1kq3xdolrekq" path="res://assets/handpainted-grass-and-ground-textures/Textures/Dirt/dirt_lighted/dirt_lighted_left.png" id="2_kn06b"]
+
+[resource]
+script = ExtResource("1_18slh")
+end_height = 20.0
+texture = ExtResource("2_kn06b")
+tile_scale = 8.0
+metadata/_custom_type_script = "uid://cmmmumqpffhur"

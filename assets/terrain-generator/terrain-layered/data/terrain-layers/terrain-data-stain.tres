@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TerrainStain" load_steps=3 format=3 uid="uid://cace8vt1a332m"]
+
+[ext_resource type="Script" uid="uid://c8pjtayb0cd2p" path="res://assets/terrain-generator/terrain-layered/scripts/terrain-stain.gd" id="1_75cis"]
+[ext_resource type="Texture2D" uid="uid://cfnh4eeonu6qs" path="res://assets/terrain-generator/terrain-layered/textures/Water01_foam_mask.png" id="2_atfs0"]
+
+[resource]
+script = ExtResource("1_75cis")
+texture = ExtResource("2_atfs0")
+texture_scale = 80.0
+strength = 0.02
+metadata/_custom_type_script = "uid://c8pjtayb0cd2p"

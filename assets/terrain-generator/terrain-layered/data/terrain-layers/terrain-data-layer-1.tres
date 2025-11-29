@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TerrainLayer" load_steps=3 format=3 uid="uid://dq2t0ourqgd3q"]
+
+[ext_resource type="Texture2D" uid="uid://db6hpmr7yh7uo" path="res://assets/handpainted-grass-and-ground-textures/Textures/Grass/Grass_lighted/Grass_lighted_down.png" id="2_7koxu"]
+[ext_resource type="Script" uid="uid://cmmmumqpffhur" path="res://assets/terrain-generator/terrain-layered/scripts/terrain-layer.gd" id="2_c8ti4"]
+
+[resource]
+script = ExtResource("2_c8ti4")
+start_height = 14.0
+end_height = 40.0
+texture = ExtResource("2_7koxu")
+tile_scale = 8.0
+metadata/_custom_type_script = "uid://cmmmumqpffhur"
