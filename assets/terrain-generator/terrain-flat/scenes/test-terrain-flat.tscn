@@ -83,7 +83,7 @@ terrain_mask_custom_curve = SubResource("Curve_v4jf2")
 terrain_layers = Array[ExtResource("5_l2e8w")]([SubResource("Resource_tek4l"), SubResource("Resource_gsxm1"), SubResource("Resource_i8m5k"), null])
 terrain_layer_blend = 2.0
 terrain_cliff = SubResource("Resource_1yx88")
-create_colliders = true
+terraces = 8
 shader_script = "uid://dihh2bci7c6w6"
 heightmap_file = "uid://dm3euq35qc52c"
 

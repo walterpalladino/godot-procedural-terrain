@@ -175,6 +175,9 @@ func generate_heightmap() -> PackedFloat32Array:
 	elif terrain_mask == TerrainMask.Custom:
 		noise_map = TerrainMapUtils.apply_custom_mask(noise_map, terrain_size, terrain_mask_margin_offset, terrain_mask_custom_curve)
 	
+	if create_terraces:
+		noise_map = TerrainMapUtils.generate_terraces(noise_map, terrain_size, terraces)
+
 	return noise_map
 	
 		
