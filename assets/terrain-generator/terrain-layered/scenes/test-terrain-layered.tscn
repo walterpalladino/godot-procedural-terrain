@@ -50,8 +50,8 @@ shadow_enabled = true
 [node name="Terrain" type="Node3D" parent="."]
 script = ExtResource("2_ahm53")
 terrain_data_folder = "res://assets/terrain-generator/terrain-layered/data"
-terrain_lod = 8
 terrain_height_scale = 96.0
+terrain_offset = Vector2(-512, -512)
 terrain_mask = 2
 terrain_mask_margin_offset = 16
 terrain_mask_custom_curve = SubResource("Curve_ahm53")

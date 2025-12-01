@@ -39,6 +39,11 @@ enum TerrainLOD
 ## LOD is used to create the mesh skiping every 2^LOD units
 @export var terrain_lod : TerrainLOD = TerrainLOD.LOD_0
 
+## Generete Mesh LOD is used to create mesh LOD adjustable with lod_bias
+@export var terrain_generate_mesh_lod : bool = false
+@export var terrain_generate_mesh_lod_angle : float = 20.0
+
+
 @export var terrain_height = 5
 @export var terrain_offset : Vector2 = Vector2( 0.0, 0.0 )
 @export var terrain_mask : TerrainMask = TerrainMask.None
@@ -201,24 +206,27 @@ func generate_chunk_mesh(noise_map : PackedFloat32Array, chunk_id : Vector2i, ch
 		chunk_size, 
 		chunk_id, 
 		terrain_lod, 
+		terrain_generate_mesh_lod,
+		terrain_generate_mesh_lod_angle
 		) 
 	
 	#mesh = array_mesh
-	var meshinstance : MeshInstance3D = MeshInstance3D.new()
-	meshinstance.mesh = array_mesh
+	var mesh_instance : MeshInstance3D = MeshInstance3D.new()
+	mesh_instance.mesh = array_mesh
+	mesh_instance.lod_bias = 1.0
 	
-	add_child(meshinstance)
-	meshinstance.owner = owner
-	meshinstance.name = "Chunk-%02d-%02d" % [chunk_id.x, chunk_id.y]
+	add_child(mesh_instance)
+	mesh_instance.owner = owner
+	mesh_instance.name = "Chunk-%02d-%02d" % [chunk_id.x, chunk_id.y]
 
 	if use_custom_shader:
 		var shader_material : Material = ShaderMaterial.new()
 		shader_material.shader = load(shader_script)
-		meshinstance.set_surface_override_material(0, shader_material)
+		mesh_instance.set_surface_override_material(0, shader_material)
 	else:
 		var flat_material : Material = StandardMaterial3D.new()
 		flat_material.vertex_color_use_as_albedo = true
-		meshinstance.set_surface_override_material(0, flat_material)
+		mesh_instance.set_surface_override_material(0, flat_material)
 	
 	#
 	if create_colliders:
@@ -228,8 +236,8 @@ func generate_chunk_mesh(noise_map : PackedFloat32Array, chunk_id : Vector2i, ch
 		
 		static_body.collision_layer = terrain_collision_layer
 
-		meshinstance.add_child(static_body) 
-		static_body.owner = meshinstance.owner
+		mesh_instance.add_child(static_body) 
+		static_body.owner = mesh_instance.owner
 		static_body.set_as_top_level(true)
 		#	Create collision sahpe based on the terrain mesh
 		var trimesh_shape : ConcavePolygonShape3D = array_mesh.create_trimesh_shape()
@@ -240,8 +248,7 @@ func generate_chunk_mesh(noise_map : PackedFloat32Array, chunk_id : Vector2i, ch
 		collision_shape.owner = static_body.owner
 
 
-
-func generate_mesh(noise_map : PackedFloat32Array, terrain_size : int, terrain_offset : Vector2, terrain_height : float, chunk_size : int, chunk_id : Vector2, lod : int) -> ArrayMesh:
+func generate_mesh(noise_map : PackedFloat32Array, terrain_size : int, terrain_offset : Vector2, terrain_height : float, chunk_size : int, chunk_id : Vector2, lod : int, generate_mesh_lod : bool = false, generate_mesh_lod_angle : float = 20.0) -> ArrayMesh:
 	
 	var array_mesh = ArrayMesh.new()
 	var surface_tool = SurfaceTool.new()
@@ -288,13 +295,21 @@ func generate_mesh(noise_map : PackedFloat32Array, terrain_size : int, terrain_o
 		
 	surface_tool.generate_normals()
 	
-	#var arrays = surface_tool.commit_to_arrays()
-	#var importer_mesh = ImporterMesh.new()
-	#importer_mesh.add_surface(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	#importer_mesh.generate_lods(60, 60, [])
-	#array_mesh = importer_mesh.get_mesh()
 	
-	array_mesh = surface_tool.commit()
+	if generate_mesh_lod:
+	
+		var arrays = surface_tool.commit_to_arrays()
+		
+		var importer_mesh = ImporterMesh.new()
+		importer_mesh.add_surface(Mesh.PRIMITIVE_TRIANGLES, arrays)
+		importer_mesh.generate_lods(generate_mesh_lod_angle, 0, [])
+		
+		array_mesh = importer_mesh.get_mesh()
+
+	else:
+
+		array_mesh = surface_tool.commit()
+
 	
 	return array_mesh
 

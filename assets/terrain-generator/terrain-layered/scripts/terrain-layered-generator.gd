@@ -34,6 +34,9 @@ enum TerrainLOD
 ## LOD is used to create the mesh skiping every 2^LOD units
 @export var terrain_lod : TerrainLOD = TerrainLOD.LOD_0
 
+## Generete Mesh LOD is used to create mesh LOD adjustable with lod_bias
+@export var terrain_generate_mesh_lod : bool = false
+@export var terrain_generate_mesh_lod_angle : float = 20.0
 
 @export var terrain_height_scale = 10.0
 @export var terrain_offset : Vector2 = Vector2( 0.0, 0.0 )
@@ -282,14 +285,17 @@ func generate_chunk_mesh(noise_map : PackedFloat32Array, chunks_qty : int, chunk
 		chunk_id, 
 		smooth_faces,
 		lod,
+		terrain_generate_mesh_lod,
+		terrain_generate_mesh_lod_angle
 		) 
 	
-	var meshinstance : MeshInstance3D = MeshInstance3D.new()
-	meshinstance.mesh = array_mesh
+	var mesh_instance : MeshInstance3D = MeshInstance3D.new()
+	mesh_instance.mesh = array_mesh
+	mesh_instance.lod_bias = 1.0
 	
-	add_child(meshinstance)
-	meshinstance.owner = owner
-	meshinstance.name = "Chunk-%02d-%02d" % [chunk_id.x, chunk_id.y]
+	add_child(mesh_instance)
+	mesh_instance.owner = owner
+	mesh_instance.name = "Chunk-%02d-%02d" % [chunk_id.x, chunk_id.y]
 	
 	#	Configure Terrain Material
 	var instance_material : ShaderMaterial = ShaderMaterial.new()
@@ -335,11 +341,11 @@ func generate_chunk_mesh(noise_map : PackedFloat32Array, chunks_qty : int, chunk
 	#	General Material Settings
 	instance_material.set_shader_parameter("make_flat", !smooth_faces)
 	
-	meshinstance.set_surface_override_material(0, instance_material)
+	mesh_instance.set_surface_override_material(0, instance_material)
 	
 	#
 	if create_colliders:
-		add_collider(meshinstance)
+		add_collider(mesh_instance)
 
 		
 

@@ -42,13 +42,13 @@ shadow_enabled = true
 [node name="Terrain" type="Node3D" parent="."]
 script = ExtResource("2_63eqp")
 terrain_size = 1024
+terrain_generate_mesh_lod = true
 terrain_height = 64
 terrain_offset = Vector2(-512, -512)
 terrain_mask_margin_offset = 16
 terrain_mask_custom_curve = SubResource("Curve_4ny01")
 default_material = ExtResource("4_53hhl")
 soft_exp = 1.59
-create_colliders = true
 heightmap_file = "uid://dm3euq35qc52c"
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
@@ -65,3 +65,4 @@ surface_material_override/0 = ExtResource("6_1xkp2")
 
 [node name="TestPlayer" parent="." instance=ExtResource("7_qxj87")]
 transform = Transform3D(-0.8677654, 0, -0.496974, 0, 1, 0, 0.496974, 0, -0.8677654, -143.22217, 80, -275.79236)
+visible = false

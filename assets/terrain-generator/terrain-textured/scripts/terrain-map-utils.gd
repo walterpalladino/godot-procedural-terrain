@@ -110,7 +110,7 @@ static func apply_mask(noise, size, mask):
 	return masked_noise
 
 
-static func generate_mesh(noise_map : PackedFloat32Array, terrain_size : int, terrain_offset : Vector2, terrain_height : float, chunk_size : int, chunk_id : Vector2, smooth_faces : bool, lod : int) -> ArrayMesh:
+static func generate_mesh(noise_map : PackedFloat32Array, terrain_size : int, terrain_offset : Vector2, terrain_height : float, chunk_size : int, chunk_id : Vector2, smooth_faces : bool, lod : int, generate_mesh_lod : bool = false, generate_mesh_lod_angle : float = 20.0) -> ArrayMesh:
 	
 	var array_mesh = ArrayMesh.new()
 	var surface_tool = SurfaceTool.new()
@@ -163,13 +163,19 @@ static func generate_mesh(noise_map : PackedFloat32Array, terrain_size : int, te
 	surface_tool.generate_normals()
 	surface_tool.generate_tangents()
 	
-	#var arrays = surface_tool.commit_to_arrays()
-	#var importer_mesh = ImporterMesh.new()
-	#importer_mesh.add_surface(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	#importer_mesh.generate_lods(60, 60, [])
-	#array_mesh = importer_mesh.get_mesh()
+	if generate_mesh_lod:
 	
-	array_mesh = surface_tool.commit()
+		var arrays = surface_tool.commit_to_arrays()
+		
+		var importer_mesh = ImporterMesh.new()
+		importer_mesh.add_surface(Mesh.PRIMITIVE_TRIANGLES, arrays)
+		importer_mesh.generate_lods(generate_mesh_lod_angle, 0, [])
+		
+		array_mesh = importer_mesh.get_mesh()
+
+	else:
+
+		array_mesh = surface_tool.commit()
 	
 	return array_mesh
 
