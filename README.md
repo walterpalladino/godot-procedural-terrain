@@ -11,3 +11,7 @@ Creates Multimes3D meshes to be used as terrain.
 - Mesh based LOD
 - Cliff creation
 - Custom shaders
+
+## Thanks
+
+Includes as part of this repo are some free assets including models and textures.
