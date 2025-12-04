@@ -61,6 +61,16 @@ enum TerrainLOD
 @export_range(1, 128) var terraces : int = 16
 
 
+@export_group("Rivers Settings")
+@export var rivers_enabled : bool = false
+@export var rivers_use_custom_seed : bool = false
+@export var rivers_seed : int = 0
+@export var rivers_randomize_on_run : bool = false
+@export_range(0.01, 1.0) var river_shore_soft_exp : float = 1.0
+@export var river_bottom_height : float = 0.0
+@export_range(1, 10) var rivers_count : int = 1
+
+
 @export_group("Noise Settings")
 @export var noise_seed : int = 0
 
@@ -114,10 +124,14 @@ var cliffs_weights : Texture2D
 var terrain_splatmap_data : PackedFloat32Array = []
 var cliffs_data : PackedFloat32Array = []
 
+var rng : RandomNumberGenerator
 
 
 func update_terrain():
 	
+	rng = RandomNumberGenerator.new()
+	rng.seed = noise_seed
+
 	#	Validate terrain data folder was set
 	if check_folder_exists(terrain_data_folder):
 		print("Folder exists at: " + terrain_data_folder)
@@ -153,6 +167,7 @@ func validate_terrain_dimensions():
 
 
 func import_terrain():
+	
 	clear_terrain()
 	
 	validate_terrain_dimensions()
@@ -259,6 +274,12 @@ func generate_heightmap() -> PackedFloat32Array:
 	
 	if create_terraces:
 		noise_map = TerrainMapUtils.generate_terraces(noise_map, terrain_size, terraces)
+
+	if rivers_enabled:
+		var river_bottom_height_adjusted : float = river_bottom_height - terrain_offset.y
+		river_bottom_height_adjusted /= terrain_height_scale
+		for r in range(rivers_count):
+			noise_map = TerrainRiversUtils.create_river(rivers_use_custom_seed, rivers_seed, rng, noise_map, terrain_size, river_bottom_height_adjusted, river_shore_soft_exp)
 
 	return noise_map
 

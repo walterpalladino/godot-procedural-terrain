@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://b5obudqavj00w"]
+[gd_scene load_steps=18 format=3 uid="uid://b5obudqavj00w"]
 
 [ext_resource type="Material" uid="uid://ysy4gepk5boc" path="res://assets/godot-shaders/shaders/sky/materials/animated_sky_material.tres" id="1_v4jf2"]
 [ext_resource type="PackedScene" uid="uid://baxojuev5t28" path="res://assets/terrain-generator/prefabs/ocean-shore.tscn" id="2_or2ub"]
@@ -24,14 +24,14 @@ height = 128.0
 [sub_resource type="Resource" id="Resource_tek4l"]
 script = ExtResource("5_l2e8w")
 end_height = 16.0
-color = Color(0.96, 0.82688004, 0.46080002, 1)
+color = Color(0.9, 0.7752, 0.432, 1)
 metadata/_custom_type_script = "uid://ibuhx5pm3mqx"
 
 [sub_resource type="Resource" id="Resource_gsxm1"]
 script = ExtResource("5_l2e8w")
 start_height = 16.0
 end_height = 24.0
-color = Color(0.08259999, 0.59, 0.2940167, 1)
+color = Color(0.11758318, 0.5541487, 0.29833385, 1)
 metadata/_custom_type_script = "uid://ibuhx5pm3mqx"
 
 [sub_resource type="Resource" id="Resource_i8m5k"]
@@ -50,6 +50,14 @@ metadata/_custom_type_script = "uid://dbkwxugt33sf8"
 [sub_resource type="QuadMesh" id="QuadMesh_tnlch"]
 size = Vector2(2048, 2048)
 orientation = 1
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_tnlch"]
+top_radius = 8.0
+bottom_radius = 8.0
+height = 100.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l2e8w"]
+albedo_color = Color(1, 0.120000005, 0.120000005, 1)
 
 [node name="TestTerrainFlat" type="Node3D"]
 
@@ -78,14 +86,52 @@ terrain_size = 1024
 terrain_lod = 8
 terrain_height = 32
 terrain_offset = Vector3(-512, 0, -512)
+terrain_mask = 2
 terrain_mask_custom_curve = SubResource("Curve_v4jf2")
-terrain_layers = Array[ExtResource("5_l2e8w")]([SubResource("Resource_tek4l"), SubResource("Resource_gsxm1"), SubResource("Resource_i8m5k"), null])
+terrain_layers = Array[ExtResource("5_l2e8w")]([SubResource("Resource_tek4l"), SubResource("Resource_gsxm1"), SubResource("Resource_i8m5k")])
 terrain_layer_blend = 2.0
 terrain_cliff = SubResource("Resource_1yx88")
 terraces = 8
-create_colliders = true
+rivers_enabled = true
+rivers_seed = 767668686
+river_shore_soft_exp = 0.3
+rivers_count = 6
 shader_script = "uid://dihh2bci7c6w6"
 heightmap_file = "uid://c317gku077wum"
 
 [node name="Sea Bottom" type="MeshInstance3D" parent="."]
+visible = false
 mesh = SubResource("QuadMesh_tnlch")
+
+[node name="Markers" type="Node3D" parent="."]
+visible = false
+
+[node name="Start" type="MeshInstance3D" parent="Markers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -145, 0, -512)
+mesh = SubResource("CylinderMesh_tnlch")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_l2e8w")
+
+[node name="Start2" type="MeshInstance3D" parent="Markers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 28, 0, -469)
+mesh = SubResource("CylinderMesh_tnlch")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_l2e8w")
+
+[node name="Start3" type="MeshInstance3D" parent="Markers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 197, 0, -425)
+mesh = SubResource("CylinderMesh_tnlch")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_l2e8w")
+
+[node name="Start4" type="MeshInstance3D" parent="Markers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 351, 0, -389)
+mesh = SubResource("CylinderMesh_tnlch")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_l2e8w")
+
+[node name="Start5" type="MeshInstance3D" parent="Markers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 512, 0, -339)
+mesh = SubResource("CylinderMesh_tnlch")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_l2e8w")

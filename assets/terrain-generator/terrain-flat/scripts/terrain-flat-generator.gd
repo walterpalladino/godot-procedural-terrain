@@ -62,6 +62,17 @@ enum TerrainLOD
 @export_range(1, 128) var terraces : int = 16
 
 
+
+@export_group("Rivers Settings")
+@export var rivers_enabled : bool = false
+@export var rivers_use_custom_seed : bool = false
+@export var rivers_seed : int = 0
+@export var rivers_randomize_on_run : bool = false
+@export_range(0.01, 1.0) var river_shore_soft_exp : float = 1.0
+@export var river_bottom_height : float = 0.0
+@export_range(1, 10) var rivers_count : int = 1
+
+
 @export_group("Noise Settings")
 @export var noise_seed : int = 0
 
@@ -95,6 +106,9 @@ enum TerrainLOD
 @export_tool_button("Clear Terrain", "Callable") var clear_terrain_action = clear_terrain
 
 
+var rng : RandomNumberGenerator
+
+
 
 func clear_terrain():
 	for i in get_children():
@@ -102,6 +116,10 @@ func clear_terrain():
 
 	
 func update_terrain():
+	
+	rng = RandomNumberGenerator.new()
+	rng.seed = noise_seed
+
 	clear_terrain()
 	generate_terrain()
 
@@ -183,6 +201,12 @@ func generate_heightmap() -> PackedFloat32Array:
 	if create_terraces:
 		noise_map = TerrainMapUtils.generate_terraces(noise_map, terrain_size, terraces)
 
+	if rivers_enabled:
+		var river_bottom_height_adjusted : float = river_bottom_height - terrain_offset.y
+		river_bottom_height_adjusted /= terrain_height 
+		for r in range(rivers_count):
+			noise_map = TerrainRiversUtils.create_river(rivers_use_custom_seed, rivers_seed, rng, noise_map, terrain_size, river_bottom_height_adjusted, river_shore_soft_exp)
+
 	return noise_map
 	
 		
@@ -248,7 +272,7 @@ func generate_chunk_mesh(mesh_offset : Vector3, noise_map : PackedFloat32Array, 
 		collision_shape.owner = static_body.owner
 
 
-func generate_mesh(noise_map : PackedFloat32Array, terrain_size : int, mesh_offset : Vector3, terrain_height : float, chunk_size : int, chunk_id : Vector2, lod : int, generate_mesh_lod : bool = false, generate_mesh_lod_angle : float = 20.0) -> ArrayMesh:
+func generate_mesh(map : PackedFloat32Array, terrain_size : int, mesh_offset : Vector3, terrain_height : float, chunk_size : int, chunk_id : Vector2, lod : int, generate_mesh_lod : bool = false, generate_mesh_lod_angle : float = 20.0) -> ArrayMesh:
 	
 	var array_mesh = ArrayMesh.new()
 	var surface_tool = SurfaceTool.new()
@@ -263,7 +287,7 @@ func generate_mesh(noise_map : PackedFloat32Array, terrain_size : int, mesh_offs
 		for x in range(max_chunk_vertices + 1):
 
 			#var y = n.get_noise_2d(x * noise_offset, z * noise_offset) * terrain_height
-			var y = noise_map[x * lod + chunk_id.x * chunk_size + (z * lod + chunk_id.y * chunk_size) * (terrain_size + 1)]
+			var y = map[x * lod + chunk_id.x * chunk_size + (z * lod + chunk_id.y * chunk_size) * (terrain_size + 1)]
 						
 			#	Set the vertex coordinates
 			var vertex_position = Vector3(x, y, z)
@@ -351,3 +375,6 @@ func get_noise_at(x : float, y : float) -> float:
 	noise.fractal_gain = fractal_gain
 
 	return noise.get_noise_2d(x, y)
+
+
+#
