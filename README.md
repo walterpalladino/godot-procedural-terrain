@@ -11,6 +11,7 @@ Creates Multimes3D meshes to be used as terrain.
 - Mesh based LOD
 - Cliff creation
 - Custom shaders
+- Rivers generation
 
 
 ## How to use it?
