@@ -45,7 +45,7 @@ enum TerrainLOD
 
 
 @export var terrain_height = 5
-@export var terrain_offset : Vector2 = Vector2( 0.0, 0.0 )
+@export var terrain_offset : Vector3 = Vector3( 0.0, 0.0, 0.0 )
 @export var terrain_mask : TerrainMask = TerrainMask.None
 @export var terrain_mask_margin_offset = 0
 @export var terrain_mask_custom_curve : Curve = Curve.new()
@@ -119,7 +119,7 @@ func import_terrain():
 	
 	for z in range(chunks_qty):
 		for x in range(chunks_qty):
-			generate_chunk_mesh(noise_map, Vector2i(x, z), terrain_chunk_size, terrain_lod)
+			generate_chunk_mesh(terrain_offset, noise_map, Vector2i(x, z), terrain_chunk_size, terrain_lod)
 	
 
 func import_heightmap() -> PackedFloat32Array:
@@ -132,14 +132,14 @@ func import_heightmap() -> PackedFloat32Array:
 		print("Error loading image: ", error)
 		return noise_map
 	#var texture = ImageTexture.create_from_image(image)
-	var terrain_height : int = terrain_size + 1
-	var terrain_width : int = terrain_size + 1
+	var chunk_height : int = terrain_size + 1
+	var chunk_width : int = terrain_size + 1
 		
 	
-	for y in range(terrain_height):
-		for x in range(terrain_width):
-			var image_x : int = (x * image.get_width()) / terrain_width 
-			var image_y : int = (y * image.get_height()) / terrain_width
+	for y in range(chunk_height):
+		for x in range(chunk_width):
+			var image_x : int = (x * image.get_width()) / chunk_width 
+			var image_y : int = (y * image.get_height()) / chunk_width
 			var float_value : float = image.get_pixel(image_x, image_y).r
 			noise_map.append(float_value)
 
@@ -166,7 +166,7 @@ func generate_terrain():
 	
 	for z in range(chunks_qty):
 		for x in range(chunks_qty):
-			generate_chunk_mesh(noise_map, Vector2i(x, z), terrain_chunk_size, terrain_lod)
+			generate_chunk_mesh(terrain_offset, noise_map, Vector2i(x, z), terrain_chunk_size, terrain_lod)
 	
 
 func generate_heightmap() -> PackedFloat32Array:
@@ -186,26 +186,26 @@ func generate_heightmap() -> PackedFloat32Array:
 	return noise_map
 	
 		
-func generate_chunk_mesh(noise_map : PackedFloat32Array, chunk_id : Vector2i, chunk_size : int, lod : int):
+func generate_chunk_mesh(mesh_offset : Vector3, noise_map : PackedFloat32Array, chunk_id : Vector2i, chunk_size : int, lod : int):
 
-	print("---------------------")
-	print("generate_chunk_mesh")
-	print(chunk_id)
-	print(chunk_size)
+	#print("---------------------")
+	#print("generate_chunk_mesh")
+	#print(chunk_id)
+	#print(chunk_size)
 #	var lod_scale : float = float(chunk_size) / float(chunk_resolution)
 #	print("lod_scale : ", lod_scale)	
 
-	var chunk_offset : Vector2 = terrain_offset + Vector2(chunk_id) * chunk_size
-	print(chunk_offset)
+	var chunk_offset : Vector2 = Vector2(mesh_offset.x, mesh_offset.z) + Vector2(chunk_id) * chunk_size
+	#print(chunk_offset)
 	
 	var array_mesh : ArrayMesh = generate_mesh(
 		noise_map, 
 		terrain_size,
-		terrain_offset,
+		mesh_offset,
 		terrain_height, 
 		chunk_size, 
 		chunk_id, 
-		terrain_lod, 
+		lod, 
 		terrain_generate_mesh_lod,
 		terrain_generate_mesh_lod_angle
 		) 
@@ -248,7 +248,7 @@ func generate_chunk_mesh(noise_map : PackedFloat32Array, chunk_id : Vector2i, ch
 		collision_shape.owner = static_body.owner
 
 
-func generate_mesh(noise_map : PackedFloat32Array, terrain_size : int, terrain_offset : Vector2, terrain_height : float, chunk_size : int, chunk_id : Vector2, lod : int, generate_mesh_lod : bool = false, generate_mesh_lod_angle : float = 20.0) -> ArrayMesh:
+func generate_mesh(noise_map : PackedFloat32Array, terrain_size : int, mesh_offset : Vector3, terrain_height : float, chunk_size : int, chunk_id : Vector2, lod : int, generate_mesh_lod : bool = false, generate_mesh_lod_angle : float = 20.0) -> ArrayMesh:
 	
 	var array_mesh = ArrayMesh.new()
 	var surface_tool = SurfaceTool.new()
@@ -267,9 +267,11 @@ func generate_mesh(noise_map : PackedFloat32Array, terrain_size : int, terrain_o
 						
 			#	Set the vertex coordinates
 			var vertex_position = Vector3(x, y, z)
-			vertex_position.x = vertex_position.x * lod + terrain_offset.x + chunk_id.x * chunk_size
+			vertex_position.x = vertex_position.x * lod + chunk_id.x * chunk_size
 			vertex_position.y = vertex_position.y * terrain_height
-			vertex_position.z = vertex_position.z * lod + terrain_offset.y + chunk_id.y * chunk_size
+			vertex_position.z = vertex_position.z * lod +  chunk_id.y * chunk_size
+
+			vertex_position += mesh_offset
 
 			surface_tool.set_smooth_group(-1)
 				

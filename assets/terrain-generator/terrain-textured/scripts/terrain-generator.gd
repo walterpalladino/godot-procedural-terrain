@@ -44,7 +44,7 @@ enum TerrainLOD
 @export var terrain_generate_mesh_lod_angle : float = 20.0
 
 @export var terrain_height = 5
-@export var terrain_offset : Vector2 = Vector2( 0.0, 0.0 )
+@export var terrain_offset : Vector3 = Vector3( 0.0, 0.0, 0.0 )
 @export var terrain_mask : TerrainMask = TerrainMask.None
 @export var terrain_mask_margin_offset = 0
 @export var terrain_mask_custom_curve : Curve = Curve.new()
@@ -107,7 +107,7 @@ func import_terrain():
 	
 	for z in range(chunks_qty):
 		for x in range(chunks_qty):
-			generate_chunk_mesh(noise_map, Vector2i(x, z), terrain_chunk_size, terrain_lod)
+			generate_chunk_mesh(terrain_offset, noise_map, Vector2i(x, z), terrain_chunk_size, terrain_lod)
 	
 
 func import_heightmap() -> PackedFloat32Array:
@@ -154,7 +154,7 @@ func generate_terrain():
 	
 	for z in range(chunks_qty):
 		for x in range(chunks_qty):
-			generate_chunk_mesh(noise_map, Vector2i(x, z), terrain_chunk_size, terrain_lod)
+			generate_chunk_mesh(terrain_offset, noise_map, Vector2i(x, z), terrain_chunk_size, terrain_lod)
 	
 
 func generate_heightmap() -> PackedFloat32Array:
@@ -171,22 +171,22 @@ func generate_heightmap() -> PackedFloat32Array:
 	return noise_map
 	
 		
-func generate_chunk_mesh(noise_map : PackedFloat32Array, chunk_id : Vector2i, chunk_size : int, lod : int):
+func generate_chunk_mesh(mesh_offset : Vector3, noise_map : PackedFloat32Array, chunk_id : Vector2i, chunk_size : int, lod : int):
 
-	print("---------------------")
-	print("generate_chunk_mesh")
-	print(chunk_id)
-	print(chunk_size)
+	#print("---------------------")
+	#print("generate_chunk_mesh")
+	#print(chunk_id)
+	#print(chunk_size)
 #	var lod_scale : float = float(chunk_size) / float(chunk_resolution)
 #	print("lod_scale : ", lod_scale)	
 
-	var chunk_offset : Vector2 = terrain_offset + Vector2(chunk_id) * chunk_size
+	var chunk_offset : Vector2 = Vector2(mesh_offset.x, mesh_offset.z) + Vector2(chunk_id) * chunk_size
 	print(chunk_offset)
 	
 	var array_mesh : ArrayMesh = TerrainMapUtils.generate_mesh(
 		noise_map, 
 		terrain_size,
-		terrain_offset,
+		mesh_offset,
 		terrain_height, 
 		chunk_size, 
 		chunk_id, 

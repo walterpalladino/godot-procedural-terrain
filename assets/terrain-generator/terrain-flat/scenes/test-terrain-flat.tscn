@@ -76,16 +76,16 @@ transform = Transform3D(-0.8677654, 0, -0.496974, 0, 1, 0, 0.496974, 0, -0.86776
 script = ExtResource("4_hnl81")
 terrain_size = 1024
 terrain_lod = 8
-terrain_height = 64
-terrain_offset = Vector2(-512, -512)
-terrain_mask = 2
+terrain_height = 32
+terrain_offset = Vector3(-512, 0, -512)
 terrain_mask_custom_curve = SubResource("Curve_v4jf2")
 terrain_layers = Array[ExtResource("5_l2e8w")]([SubResource("Resource_tek4l"), SubResource("Resource_gsxm1"), SubResource("Resource_i8m5k"), null])
 terrain_layer_blend = 2.0
 terrain_cliff = SubResource("Resource_1yx88")
 terraces = 8
+create_colliders = true
 shader_script = "uid://dihh2bci7c6w6"
-heightmap_file = "uid://dm3euq35qc52c"
+heightmap_file = "uid://c317gku077wum"
 
 [node name="Sea Bottom" type="MeshInstance3D" parent="."]
 mesh = SubResource("QuadMesh_tnlch")

@@ -110,7 +110,7 @@ static func apply_mask(noise, size, mask):
 	return masked_noise
 
 
-static func generate_mesh(noise_map : PackedFloat32Array, terrain_size : int, terrain_offset : Vector2, terrain_height : float, chunk_size : int, chunk_id : Vector2, smooth_faces : bool, lod : int, generate_mesh_lod : bool = false, generate_mesh_lod_angle : float = 20.0) -> ArrayMesh:
+static func generate_mesh(noise_map : PackedFloat32Array, terrain_size : int, mesh_offset : Vector3, terrain_height : float, chunk_size : int, chunk_id : Vector2, smooth_faces : bool, lod : int, generate_mesh_lod : bool = false, generate_mesh_lod_angle : float = 20.0) -> ArrayMesh:
 	
 	var array_mesh = ArrayMesh.new()
 	var surface_tool = SurfaceTool.new()
@@ -136,9 +136,11 @@ static func generate_mesh(noise_map : PackedFloat32Array, terrain_size : int, te
 			
 			#	Set the vertex coordinates
 			var vertex_position = Vector3(x, y, z)
-			vertex_position.x = vertex_position.x * lod + terrain_offset.x + chunk_id.x * chunk_size
+			vertex_position.x = vertex_position.x * lod + chunk_id.x * chunk_size
 			vertex_position.y = vertex_position.y * terrain_height
-			vertex_position.z = vertex_position.z * lod + terrain_offset.y + chunk_id.y * chunk_size
+			vertex_position.z = vertex_position.z * lod + chunk_id.y * chunk_size
+
+			vertex_position += mesh_offset
 
 			if !smooth_faces:
 				surface_tool.set_smooth_group(-1)

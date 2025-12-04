@@ -39,7 +39,7 @@ enum TerrainLOD
 @export var terrain_generate_mesh_lod_angle : float = 20.0
 
 @export var terrain_height_scale = 10.0
-@export var terrain_offset : Vector2 = Vector2( 0.0, 0.0 )
+@export var terrain_offset : Vector3 = Vector3( 0.0, 0.0, 0.0 )
 @export var terrain_mask : TerrainMask = TerrainMask.None
 @export var terrain_mask_margin_offset = 0
 @export var terrain_mask_custom_curve : Curve = Curve.new()
@@ -111,7 +111,7 @@ var layer_weights : Array[Texture2D] = []
 var cliffs_weights : Texture2D
 
 #	Splatmaps
-var splatmap_data : PackedFloat32Array = []
+var terrain_splatmap_data : PackedFloat32Array = []
 var cliffs_data : PackedFloat32Array = []
 
 
@@ -168,20 +168,20 @@ func import_terrain():
 	terrain_data.set_heightmap_data(noise_map)
 
 	#update_splatmaps_on_terrain(terrain)
-	generate_splatmap()
-	print("splatmap_data.size : " + str(splatmap_data.size()))
-	terrain_data.set_layer_data(splatmap_data)
+	terrain_splatmap_data = generate_splatmap()
+	print("terrain_splatmap_data.size : " + str(terrain_splatmap_data.size()))
+	terrain_data.set_layer_data(terrain_splatmap_data)
 	
 
-	save_chunk_data(splatmap_data)
+	save_chunk_data(terrain_splatmap_data)
 
-	var chunks_qty : int = terrain_size / terrain_chunk_size
+	var chunks_qty : int = int(float(terrain_size) / terrain_chunk_size)
 	if chunks_qty <= 1:
 		chunks_qty = 1
 
 	for z in range(chunks_qty):
 		for x in range(chunks_qty):
-			generate_chunk_mesh(noise_map, chunks_qty, Vector2i(x, z), terrain_chunk_size, terrain_lod)
+			generate_chunk_mesh(terrain_offset, noise_map, chunks_qty, Vector2i(x, z), terrain_chunk_size, terrain_lod)
 
 	
 
@@ -194,7 +194,6 @@ func import_heightmap() -> PackedFloat32Array:
 	if error != OK:
 		print("Error loading image: ", error)
 		return noise_map
-	#var texture = ImageTexture.create_from_image(image)
 	var terrain_height : int = terrain_size + 1
 	var terrain_width : int = terrain_size + 1
 		
@@ -231,12 +230,12 @@ func generate_terrain() :
 	terrain_data.set_heightmap_data(noise_map)
 
 	#update_splatmaps_on_terrain(terrain)
-	generate_splatmap()
-	print("splatmap_data.size : " + str(splatmap_data.size()))
-	terrain_data.set_layer_data(splatmap_data)
+	terrain_splatmap_data = generate_splatmap()
+	print("terrain_splatmap_data.size : " + str(terrain_splatmap_data.size()))
+	terrain_data.set_layer_data(terrain_splatmap_data)
 	
 
-	save_chunk_data(splatmap_data)
+	save_chunk_data(terrain_splatmap_data)
 
 	var chunks_qty : int = terrain_size / terrain_chunk_size
 	if chunks_qty <= 1:
@@ -244,7 +243,7 @@ func generate_terrain() :
 	
 	for z in range(chunks_qty):
 		for x in range(chunks_qty):
-			generate_chunk_mesh(noise_map, chunks_qty, Vector2i(x, z), terrain_chunk_size, terrain_lod)
+			generate_chunk_mesh(terrain_offset, noise_map, chunks_qty, Vector2i(x, z), terrain_chunk_size, terrain_lod)
 
 
 func generate_heightmap() -> PackedFloat32Array:
@@ -264,22 +263,22 @@ func generate_heightmap() -> PackedFloat32Array:
 	return noise_map
 
 
-func generate_chunk_mesh(noise_map : PackedFloat32Array, chunks_qty : int, chunk_id : Vector2i, chunk_size : int, lod : int):
+func generate_chunk_mesh(mesh_offset : Vector3, noise_map : PackedFloat32Array, chunks_qty : int, chunk_id : Vector2i, chunk_size : int, lod : int):
 
-	print("---------------------")
-	print("generate_chunk_mesh")
-	print(chunk_id)
-	print(chunk_size)
+	#print("---------------------")
+	#print("generate_chunk_mesh")
+	#print(chunk_id)
+	#print(chunk_size)
 #	var lod_scale : float = float(chunk_size) / float(chunk_resolution)
 #	print("lod_scale : ", lod_scale)	
 
-	var chunk_offset : Vector2 = terrain_offset + Vector2(chunk_id) * chunk_size
-	print(chunk_offset)
+	#var chunk_offset : Vector2 = mesh_offset + Vector2(chunk_id) * chunk_size
+	#print(chunk_offset)
 	
 	var array_mesh : ArrayMesh = TerrainMapUtils.generate_mesh(
 		noise_map, 
 		terrain_size,
-		terrain_offset,
+		mesh_offset,
 		terrain_height_scale, 
 		chunk_size, 
 		chunk_id, 
@@ -298,11 +297,21 @@ func generate_chunk_mesh(noise_map : PackedFloat32Array, chunks_qty : int, chunk
 	mesh_instance.name = "Chunk-%02d-%02d" % [chunk_id.x, chunk_id.y]
 	
 	#	Configure Terrain Material
+	var terrain_layers_offset : Vector2 = Vector2(chunk_id.x, chunk_id.y)
+	terrain_layers_offset /= float(chunks_qty)
+	var instance_material : ShaderMaterial = generate_material(terrain_layers_offset)
+	mesh_instance.set_surface_override_material(0, instance_material)
+	
+	#
+	if create_colliders:
+		add_collider(mesh_instance)
+
+
+func generate_material(terrain_layers_offset : Vector2) -> ShaderMaterial:
+
 	var instance_material : ShaderMaterial = ShaderMaterial.new()
 	instance_material.shader = load(shader_script)
 
-	var terrain_layers_offset : Vector2 = Vector2(chunk_id.x, chunk_id.y)
-	terrain_layers_offset /= float(chunks_qty)
 	instance_material.set_shader_parameter("terrain_layers_offset", terrain_layers_offset)
 	
 	for l in terrain_layers.size():
@@ -341,13 +350,8 @@ func generate_chunk_mesh(noise_map : PackedFloat32Array, chunks_qty : int, chunk
 	#	General Material Settings
 	instance_material.set_shader_parameter("make_flat", !smooth_faces)
 	
-	mesh_instance.set_surface_override_material(0, instance_material)
-	
-	#
-	if create_colliders:
-		add_collider(mesh_instance)
-
-		
+	return instance_material	
+			
 
 func add_collider(meshinstance : MeshInstance3D):
 	#	Add StaticBody3d
@@ -367,8 +371,9 @@ func add_collider(meshinstance : MeshInstance3D):
 	collision_shape.owner = static_body.owner
 
 	
-func generate_splatmap() :
+func generate_splatmap() -> PackedFloat32Array :
 
+	var splatmap_data : PackedFloat32Array = []
 	splatmap_data.resize(terrain_data.terrain_size * terrain_data.terrain_size * terrain_data.layers_size)
 	
 	var splat : PackedFloat32Array = []
@@ -479,6 +484,7 @@ func _get_steepness_at(world_x : float, world_z : float) -> float:
 
 func remap_value( value : float, s_min : float, s_max : float, m_min : float, m_max : float) -> float:
 	return (value - s_min) * (m_max - m_min) / (s_max - s_min) + m_min
+
 
 func normalize(values : Array[float] ) -> Array[float] :
 
