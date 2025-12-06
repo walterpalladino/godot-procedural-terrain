@@ -86,7 +86,6 @@ terrain_size = 1024
 terrain_lod = 8
 terrain_height = 32
 terrain_offset = Vector3(-512, 0, -512)
-terrain_mask = 2
 terrain_mask_custom_curve = SubResource("Curve_v4jf2")
 terrain_layers = Array[ExtResource("5_l2e8w")]([SubResource("Resource_tek4l"), SubResource("Resource_gsxm1"), SubResource("Resource_i8m5k")])
 terrain_layer_blend = 2.0
@@ -95,7 +94,6 @@ terraces = 8
 rivers_enabled = true
 rivers_seed = 767668686
 river_shore_soft_exp = 0.3
-rivers_count = 6
 shader_script = "uid://dihh2bci7c6w6"
 heightmap_file = "uid://c317gku077wum"
 

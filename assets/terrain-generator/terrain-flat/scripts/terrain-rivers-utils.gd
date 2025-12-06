@@ -44,6 +44,13 @@ static func create_river(rivers_use_custom_seed : bool, rivers_seed : int, rng :
 		3:
 			ending_position.z += rng.randf() * (map_size - 1)
 	
+	map_with_river = carve_river(starting_position, ending_position, rng, map_with_river, map_size, river_bottom_height, river_shore_soft_exp, true)
+
+	return map_with_river
+
+
+static func 	carve_river(starting_position : Vector3, ending_position : Vector3, rng : RandomNumberGenerator, map_with_river : PackedFloat32Array, map_size : int, river_bottom_height : float, river_shore_soft_exp: float, is_parent : bool = false) -> PackedFloat32Array :
+	
 	var segments_qty : int = 16
 	var segment_points : Array[Vector3] = []
 	
@@ -62,6 +69,14 @@ static func create_river(rivers_use_custom_seed : bool, rivers_seed : int, rng :
 	var shape_size : int = 24
 	
 	for s in range(segment_points.size() - 1):
+		
+		var new_ending_position : Vector3
+		new_ending_position.x += rng.randf() * (map_size - 1)			
+		new_ending_position.z += rng.randf() * (map_size - 1)
+
+		if rng.randf() < 0.1 && is_parent:
+			map_with_river = carve_river(segment_points[s], new_ending_position, rng, map_with_river, map_size, river_bottom_height, river_shore_soft_exp)
+
 		map_with_river = carve_segment(map_with_river, map_size, segment_points[s], segment_points[s + 1], shape_size, river_bottom_height, river_shore_soft_exp )
 	
 	return map_with_river
