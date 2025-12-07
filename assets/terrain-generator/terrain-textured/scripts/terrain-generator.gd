@@ -54,6 +54,11 @@ enum TerrainLOD
 @export var default_material : Material
 
 
+@export_group("Terrain Flat Settings")
+@export var terrain_flat_enabled : bool = false
+@export var terrain_flat_height_level : float = 8.0
+
+
 @export_group("Rivers Settings")
 @export var rivers_enabled : bool = false
 @export var rivers_use_custom_seed : bool = false
@@ -178,7 +183,14 @@ func generate_terrain():
 
 func generate_heightmap() -> PackedFloat32Array:
 	
-	var noise_map : PackedFloat32Array = NoiseUtils.generate_noise_map(noise_seed, fractal_octaves, fractal_lacunarity, fractal_octaves, noise_scale, terrain_size, noise_offset, soft_exp)
+	var noise_map : PackedFloat32Array 
+	
+	if terrain_flat_enabled:
+		var value : float = terrain_flat_height_level / terrain_height
+		value = clamp(value, 0.0, 1.0)
+		noise_map = NoiseUtils.generate_flat_map(terrain_size, value)
+	else:
+		noise_map = NoiseUtils.generate_noise_map(noise_seed, fractal_octaves, fractal_lacunarity, fractal_octaves, noise_scale, terrain_size, noise_offset, soft_exp)
 
 	if terrain_mask == TerrainMask.Circular:
 		noise_map = TerrainMapUtils.apply_circular_mask(noise_map, terrain_size, terrain_mask_margin_offset)

@@ -50,3 +50,12 @@ static func generate_noise_map(noise_seed:int, fractal_octaves : int, fractal_la
 	return heights
 	
 	
+static func generate_flat_map(size:int, value : float = 1.0) -> PackedFloat32Array :
+	
+	var heights = PackedFloat32Array()
+	
+	for z in range(size + 1):
+		for x in range(size + 1):
+			heights.append(value)
+
+	return heights

@@ -48,6 +48,7 @@ terrain_offset = Vector3(-512, 0, -512)
 terrain_mask_margin_offset = 16
 terrain_mask_custom_curve = SubResource("Curve_4ny01")
 default_material = ExtResource("4_53hhl")
+terrain_flat_height_level = 16.0
 rivers_enabled = true
 river_shore_soft_exp = 0.3
 soft_exp = 1.59

@@ -55,6 +55,7 @@ terrain_height_scale = 32.0
 terrain_offset = Vector3(-512, 0, -512)
 terrain_mask_margin_offset = 16
 terrain_mask_custom_curve = SubResource("Curve_ahm53")
+terrain_flat_height_level = 24.0
 terrain_layers = Array[ExtResource("4_uukje")]([ExtResource("5_io4y8"), ExtResource("6_io4y8"), ExtResource("7_g8ein")])
 terrain_cliff = ExtResource("7_byehe")
 terrain_stain = ExtResource("8_jab1t")

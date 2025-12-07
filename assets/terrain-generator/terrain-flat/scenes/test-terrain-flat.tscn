@@ -87,6 +87,7 @@ terrain_lod = 8
 terrain_height = 32
 terrain_offset = Vector3(-512, 0, -512)
 terrain_mask_custom_curve = SubResource("Curve_v4jf2")
+terrain_flat_height_level = 16.0
 terrain_layers = Array[ExtResource("5_l2e8w")]([SubResource("Resource_tek4l"), SubResource("Resource_gsxm1"), SubResource("Resource_i8m5k")])
 terrain_layer_blend = 2.0
 terrain_cliff = SubResource("Resource_1yx88")
