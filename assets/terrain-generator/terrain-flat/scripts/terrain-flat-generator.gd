@@ -30,6 +30,12 @@ enum TerrainLOD
 	LOD_5 = 32
 }
 
+enum TerrainNoiseBase
+{
+	PerlinBased = 1,
+	VoronoiBased = 2
+}
+
 
 @export_group("Terrain Settings")
 ## Total size of the terrain
@@ -92,6 +98,7 @@ enum TerrainLOD
 #	Help for Island / Beaches / smooth mountain sides
 @export var soft_exp : float = 1.0
 
+@export var terrain_noise_base : TerrainNoiseBase = TerrainNoiseBase.PerlinBased
 
 @export_group("Physics Settings")
 @export var create_colliders : bool = false
@@ -211,7 +218,10 @@ func generate_heightmap() -> PackedFloat32Array:
 		value = clamp(value, 0.0, 1.0)
 		noise_map = NoiseUtils.generate_flat_map(terrain_size, value)
 	else:
-		noise_map = NoiseUtils.generate_noise_map(noise_seed, fractal_octaves, fractal_lacunarity, fractal_octaves, noise_scale, terrain_size, noise_offset, soft_exp)
+		if terrain_noise_base == TerrainNoiseBase.PerlinBased:
+			noise_map = NoiseUtils.generate_noise_map_perlin(noise_seed, fractal_octaves, fractal_lacunarity, fractal_octaves, noise_scale, terrain_size, noise_offset, soft_exp)
+		else :
+			noise_map = NoiseUtils.generate_noise_map_voronoi(noise_seed, fractal_octaves, fractal_lacunarity, fractal_octaves, noise_scale, terrain_size, noise_offset, soft_exp)
 
 	if terrain_mask == TerrainMask.Circular:
 		noise_map = TerrainMapUtils.apply_circular_mask(noise_map, terrain_size, terrain_mask_margin_offset)
@@ -381,7 +391,7 @@ func get_color_at(vertex : Vector3) -> Color:
 			y += this_noise * terrain_layer_blend
 
 		if y >= terrain_layers[i].start_height && y <= terrain_layers[i].end_height :
-			return terrain_layers[i].color	
+			return terrain_layers[i].color
 	
 	return color
 
