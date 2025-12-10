@@ -43,7 +43,7 @@ shadow_enabled = true
 script = ExtResource("2_63eqp")
 terrain_size = 1024
 terrain_generate_mesh_lod = true
-terrain_height = 32
+terrain_height = 64
 terrain_offset = Vector3(-512, 0, -512)
 terrain_mask_margin_offset = 16
 terrain_mask_custom_curve = SubResource("Curve_4ny01")
@@ -52,7 +52,6 @@ terrain_flat_height_level = 16.0
 rivers_enabled = true
 river_shore_soft_exp = 0.3
 soft_exp = 1.59
-create_colliders = true
 heightmap_file = "uid://dm3euq35qc52c"
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]

@@ -85,7 +85,7 @@ static func 	carve_river(starting_position : Vector3, ending_position : Vector3,
 static func carve_segment(map : PackedFloat32Array, map_size : int, start_position : Vector3, end_position : Vector3, shape_size : int, height : float, shore_soft_exp : float) -> PackedFloat32Array:
 
 	var next_point : Vector3 = start_position
-	var segments_qty : int = 4
+	var segments_qty : int = 16
 	var segment_increment : Vector3 = (end_position - start_position) / float(segments_qty)
 
 	for s in range(segments_qty):
@@ -106,13 +106,34 @@ static func carve(map : PackedFloat32Array, map_size : int, center_position : Ve
 				continue
 
 			var distance : float = sqrt(x * x + z * z)
-			distance = distance / sqrt(2 * shape_size * shape_size)
-			distance = clamp(distance, 0.0, 1.0)
+			
+			if distance > shape_size:
+				continue
+			
+			distance = distance / shape_size
 			distance = pow(distance, shore_soft_exp)
+			distance = clamp(distance, 0.0, 1.0)
 			
 			var idx : int = int(x + center_position.x) + int(z + center_position.z) * (map_size + 1) 
 			var actual_height : float =	 map[ idx ]
 			map[ idx ] = lerp(height, actual_height, distance)
+
+	
+			#	Smooth
+			#var value : float = 0;
+			#var count : int = 0;
+			#
+			#for zs in range(z - 2 + center_position.z, z + 2 + center_position.z):
+				#for xs in range(x - 2 + center_position.x, x + 2 + center_position.x):
+			#
+					#if xs >= 0 && zs >= 0 && xs < map_size && zs < map_size :
+						#var idx_s : int = xs + zs * (map_size + 1) 
+						#value +=	 map[ idx_s ]
+						#count += 1
+#
+			#value /= float(count)			
+			#map[ idx ] = value
+			
 
 	return map
 	

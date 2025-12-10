@@ -96,6 +96,7 @@ rivers_enabled = true
 rivers_seed = 767668686
 river_shore_soft_exp = 0.3
 shader_script = "uid://dihh2bci7c6w6"
+use_custom_shader = true
 heightmap_file = "uid://c317gku077wum"
 
 [node name="Sea Bottom" type="MeshInstance3D" parent="."]

@@ -50,6 +50,8 @@ enum TerrainLOD
 @export var terrain_mask_margin_offset = 0
 @export var terrain_mask_custom_curve : Curve = Curve.new()
 
+#@export_dir var terrain_data_folder : String
+
 
 @export_group("Terrain Flat Settings")
 @export var terrain_flat_enabled : bool = false
@@ -112,6 +114,9 @@ enum TerrainLOD
 
 
 var rng : RandomNumberGenerator
+var terrain_palette : Image
+var terrain_palette_file_name : String = "terrain_palette.png"
+var terrain_layers_texture : Texture2D
 
 
 
@@ -140,6 +145,8 @@ func import_terrain():
 	var chunks_qty : int = terrain_size / terrain_chunk_size
 	if chunks_qty <= 1:
 		chunks_qty = 1
+		
+	#generate_texture_image()
 	
 	for z in range(chunks_qty):
 		for x in range(chunks_qty):
@@ -184,6 +191,8 @@ func generate_terrain():
 	
 	var noise_map : PackedFloat32Array = generate_heightmap()
 	
+	#generate_texture_image()
+
 	var chunks_qty : int = terrain_size / terrain_chunk_size
 	if chunks_qty <= 1:
 		chunks_qty = 1
@@ -225,15 +234,7 @@ func generate_heightmap() -> PackedFloat32Array:
 		
 func generate_chunk_mesh(mesh_offset : Vector3, noise_map : PackedFloat32Array, chunk_id : Vector2i, chunk_size : int, lod : int):
 
-	#print("---------------------")
-	#print("generate_chunk_mesh")
-	#print(chunk_id)
-	#print(chunk_size)
-#	var lod_scale : float = float(chunk_size) / float(chunk_resolution)
-#	print("lod_scale : ", lod_scale)	
-
 	var chunk_offset : Vector2 = Vector2(mesh_offset.x, mesh_offset.z) + Vector2(chunk_id) * chunk_size
-	#print(chunk_offset)
 	
 	var array_mesh : ArrayMesh = generate_mesh(
 		noise_map, 
@@ -247,7 +248,6 @@ func generate_chunk_mesh(mesh_offset : Vector3, noise_map : PackedFloat32Array, 
 		terrain_generate_mesh_lod_angle
 		) 
 	
-	#mesh = array_mesh
 	var mesh_instance : MeshInstance3D = MeshInstance3D.new()
 	mesh_instance.mesh = array_mesh
 	mesh_instance.lod_bias = 1.0
@@ -256,14 +256,9 @@ func generate_chunk_mesh(mesh_offset : Vector3, noise_map : PackedFloat32Array, 
 	mesh_instance.owner = owner
 	mesh_instance.name = "Chunk-%02d-%02d" % [chunk_id.x, chunk_id.y]
 
-	if use_custom_shader:
-		var shader_material : Material = ShaderMaterial.new()
-		shader_material.shader = load(shader_script)
-		mesh_instance.set_surface_override_material(0, shader_material)
-	else:
-		var flat_material : Material = StandardMaterial3D.new()
-		flat_material.vertex_color_use_as_albedo = true
-		mesh_instance.set_surface_override_material(0, flat_material)
+	#	Configure Terrain Material
+	var instance_material : ShaderMaterial = generate_material()
+	mesh_instance.set_surface_override_material(0, instance_material)
 	
 	#
 	if create_colliders:
@@ -283,6 +278,25 @@ func generate_chunk_mesh(mesh_offset : Vector3, noise_map : PackedFloat32Array, 
 		#	Add the collision shape
 		static_body.add_child(collision_shape)
 		collision_shape.owner = static_body.owner
+
+
+
+func generate_material() -> ShaderMaterial:
+	
+	var instance_material : Material
+	
+	if !use_custom_shader:
+		instance_material = StandardMaterial3D.new()
+		instance_material.vertex_color_use_as_albedo = true
+		return instance_material
+	
+	instance_material = ShaderMaterial.new()
+	instance_material.shader = load(shader_script)
+	
+	instance_material.set_shader_parameter("terrain_layers_texture", terrain_layers_texture)
+
+	return instance_material
+
 
 
 func generate_mesh(map : PackedFloat32Array, terrain_size : int, mesh_offset : Vector3, terrain_height : float, chunk_size : int, chunk_id : Vector2, lod : int, generate_mesh_lod : bool = false, generate_mesh_lod_angle : float = 20.0) -> ArrayMesh:
@@ -391,3 +405,40 @@ func get_noise_at(x : float, y : float) -> float:
 
 
 #
+#func generate_texture_image(size : int  = 8) :
+	#
+	#if terrain_layers.size() == 0:
+		#print ("No layers defined to be able to store texture image.")
+		#return
+	#
+	#var width : int = size * terrain_layers.size()
+	#var height : int = size
+	#
+	#terrain_palette =  Image.create_empty(width, height, false, Image.FORMAT_RGB8) 
+	#terrain_palette.fill(Color.PINK) # Fill with a color
+#
+	#for layer_id in range(terrain_layers.size()):
+		#
+		#var box_color = terrain_layers[layer_id].color
+		#var box_rect = Rect2i(size * layer_id, 0, size, size) # x, y, width, height
+		#terrain_palette.fill_rect(box_rect, box_color)
+	#
+	#var file_path = terrain_data_folder + "/" + terrain_palette_file_name
+#
+	#save_texture_image(terrain_palette, file_path)
+#
+	#terrain_layers_texture = ImageTexture.create_from_image(terrain_palette)
+
+
+
+#func save_texture_image(image : Image, file_path : String) -> bool :
+	#
+	#var result = image.save_png(file_path) # For PNG format
+	#
+	#if result == OK:
+		##print("Image saved successfully to: ", file_path)
+		#return true
+	#else:
+		#print("Error saving image: ", result)
+		#return false
+	

@@ -1,14 +1,14 @@
 [gd_resource type="ShaderMaterial" load_steps=10 format=3 uid="uid://b07q2po1upaan"]
 
 [ext_resource type="Shader" uid="uid://bto665tbddorn" path="res://assets/godot-shaders/shaders/terrain/layered_terrain/terrain.gdshader" id="1_8btlm"]
-[ext_resource type="Texture2D" uid="uid://bacckvgwridov" path="res://Textures/Ground_Textures/Cliffwall.png" id="2_cv6hl"]
-[ext_resource type="Texture2D" uid="uid://cw0s7v6alpwys" path="res://Textures/Ground_Textures/Cliffwall_normals.png" id="3_gttpb"]
-[ext_resource type="Texture2D" uid="uid://cqixcwwdvoqvu" path="res://Textures/Ground_Textures/BaseGrass_normals.png" id="4_wnhoa"]
-[ext_resource type="Texture2D" uid="uid://g7pugp7ocpdx" path="res://Textures/Ground_Textures/Sand_Darker.png" id="5_hk8n1"]
-[ext_resource type="Texture2D" uid="uid://bhst4bg4hlfe1" path="res://Textures/Ground_Textures/Sand.png" id="6_thhif"]
-[ext_resource type="Texture2D" uid="uid://cxlf4e0mqbxtr" path="res://Textures/Ground_Textures/Grass.png" id="7_nn3o1"]
-[ext_resource type="Texture2D" uid="uid://b008jgpcaqc1r" path="res://Textures/Ground_Textures/Leaves_normals_01.png" id="8_gr6wu"]
-[ext_resource type="Texture2D" uid="uid://dgmvtrky5y410" path="res://Textures/Ground_Textures/Leaves_02.png" id="9_hunp8"]
+[ext_resource type="Texture2D" uid="uid://fn2kqfyc54oi" path="res://assets/cartoon-texture-pack/ROCKS/ROCKS_Cliff/Textures/Rocks_Cliff_A_Basecolor_B.png" id="2_cv6hl"]
+[ext_resource type="Texture2D" uid="uid://chcoc6b1565bi" path="res://assets/cartoon-texture-pack/ROCKS/ROCKS_Cliff/Textures/Rocks_Cliff_A_Normal.png" id="3_gttpb"]
+[ext_resource type="Texture2D" uid="uid://babon4y54o171" path="res://assets/cartoon-texture-pack/GRASS/GRASS_Dense/GRASS_Dense_Tint_01/Textures/Grass_Dense_Tint_01_Base_Basecolor_A.png" id="4_wnhoa"]
+[ext_resource type="Texture2D" uid="uid://cqd1sct12xm1w" path="res://assets/cartoon-texture-pack/SAND/SAND_Underwater/Textures/Sand_Underwater_Base_Basecolor.png" id="5_hk8n1"]
+[ext_resource type="Texture2D" uid="uid://dvqnvl0gl1qgp" path="res://assets/cartoon-texture-pack/SAND/SAND_Beach/Textures/Sand_Beach_Base_Basecolor.png" id="6_thhif"]
+[ext_resource type="Texture2D" uid="uid://cj8nc5pnkd7ml" path="res://assets/cartoon-texture-pack/GRASS/GRASS_Flower/GRASS_Flower_Tint_01/Texture/Grass_Flower_Tint_01_Base_Basecolor.png" id="7_nn3o1"]
+[ext_resource type="Texture2D" uid="uid://cy6uaam4f6cmf" path="res://assets/cartoon-texture-pack/GRASS/GRASS_Flower/GRASS_Flower_Tint_01/Texture/Grass_Flower_Tint_01_FlowerBlue_B_Basecolor.png" id="8_gr6wu"]
+[ext_resource type="Texture2D" uid="uid://cy6uaam4f6cmf" path="res://assets/cartoon-texture-pack/GRASS/GRASS_Flower/GRASS_Flower_Tint_01/Texture/Grass_Flower_Tint_01_FlowerBlue_B_Basecolor.png" id="9_hunp8"]
 
 [resource]
 render_priority = 0

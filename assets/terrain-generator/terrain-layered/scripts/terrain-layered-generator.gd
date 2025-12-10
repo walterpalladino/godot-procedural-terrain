@@ -193,6 +193,7 @@ func import_terrain():
 	print("terrain_splatmap_data.size : " + str(terrain_splatmap_data.size()))
 	terrain_data.set_layer_data(terrain_splatmap_data)
 	
+	generate_cliffs()
 
 	save_chunk_data(terrain_splatmap_data)
 
@@ -255,6 +256,8 @@ func generate_terrain() :
 	print("terrain_splatmap_data.size : " + str(terrain_splatmap_data.size()))
 	terrain_data.set_layer_data(terrain_splatmap_data)
 	
+	generate_cliffs()
+
 
 	save_chunk_data(terrain_splatmap_data)
 
@@ -466,7 +469,12 @@ func generate_splatmap() -> PackedFloat32Array :
 				
 									
 			splat.clear()
-			
+										
+	return splatmap_data
+
+
+func generate_cliffs() :
+
 	cliffs_data.resize(terrain_data.terrain_size * terrain_data.terrain_size)
 		
 	for z in terrain_data.terrain_size:
@@ -474,19 +482,22 @@ func generate_splatmap() -> PackedFloat32Array :
 
 			var steepness : float = _get_steepness_at(x, z)
 			var value : float = 0
-			if terrain_cliff.enabled && steepness > terrain_cliff.minimum_steepness:
-				var diff : float = steepness - terrain_cliff.minimum_steepness
-				value = pow(diff, 10.10)				
-				value = clamp(value, 0.0, 1.0)
 
+			if terrain_cliff.enabled && (steepness > terrain_cliff.minimum_steepness) :
+				var diff : float = steepness - terrain_cliff.minimum_steepness
+				value = diff / terrain_cliff.minimum_steepness
+				value = clamp(value, 0.0, 1.0)
+				value = pow(value, 0.50)
+				
 			cliffs_data[x + z * terrain_data.terrain_size] = value
-							
-	return splatmap_data
+
 
 
 func _get_height_at(world_x : float, world_z : float) -> float:
 
-	var terrain_height : float = terrain_data.get_height_at(world_x / float(terrain_data.terrain_size), world_z / float(terrain_data.terrain_size))
+	var normalized_x : float = world_x / float(terrain_data.terrain_size + 1)
+	var normalized_z : float = world_z / float(terrain_data.terrain_size + 1)
+	var terrain_height : float = terrain_data.get_height_at(normalized_x, normalized_z)
 	terrain_height *= terrain_height_scale 
 	return terrain_height
 	
@@ -503,17 +514,34 @@ func _get_steepness_at(world_x : float, world_z : float) -> float:
 	if world_z >= terrain_size - 1 :
 		world_z = terrain_size - 2.0
 
-	var slope_x : float = _get_height_at(world_x + 1, world_z) - _get_height_at(world_x, world_z)
-	var slope_z : float = _get_height_at(world_x, world_z + 1) - _get_height_at(world_x, world_z)
+	var height : float = _get_height_at(world_x, world_z)
+	var height_x : float = _get_height_at(world_x + 1, world_z)
+	var height_z : float = _get_height_at(world_x, world_z + 1)
 	
+	var slope_x : float = height_x - height
+	var slope_z : float = height_z - height
+	
+	#slope_x /= 2.0
+	#slope_z /= 2.0
+	#print(sqrt(slope_x * slope_x + slope_z * slope_z))
+	#var magnitude : float = sqrt(slope_x * slope_x + slope_z * slope_z) 
+	#return abs(rad_to_deg(atan(magnitude)))
+	#return rad_to_deg(atan2(slope_x, slope_z))
 	# Scale differences based on terrain size
 	var normal : Vector3 = Vector3(-slope_x, 1.0, slope_z)
 	normal = normal.normalized()
+	#print(normal)
 	
-	var steepness = acos(normal.dot(Vector3.UP))
+	#return normal.dot(Vector3.UP)
+	
+	var dot_product = normal.dot(Vector3.UP)
+	dot_product = clamp(dot_product, -1.0, 1.0)
+	
+	var steepness = acos(dot_product)
 	steepness =  rad_to_deg(steepness)
-	
+	#print(steepness)
 	return abs(steepness)
+
 
 
 func remap_value( value : float, s_min : float, s_max : float, m_min : float, m_max : float) -> float:
@@ -604,6 +632,7 @@ func save_chunk_data(splatmap_data : PackedFloat32Array) :
 	image = Image.create_empty(width, height, false, Image.FORMAT_RF) # Or Image.FORMAT_RGBAF for RGBA floats
 
 	if terrain_cliff and terrain_cliff.enabled:
+
 		for y in range(height):
 			for x in range(width):
 				var float_value : float = cliffs_data[x + y * terrain_size]

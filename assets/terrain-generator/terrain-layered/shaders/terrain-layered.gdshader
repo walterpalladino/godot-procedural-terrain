@@ -132,7 +132,7 @@ void fragment() {
 
 	if (cliff_enabled) {
 		vec3 cliff_texture_color = texture(cliff_texture, UV * cliff_texture_scale).rgb;
-		float cliff_weight = texture(cliff_layer_weights, UV).r;
+		float cliff_weight = texture(cliff_layer_weights, UV + terrain_layers_offset).r;
 		color = mix(color, cliff_texture_color * cliff_color, cliff_weight);
 	
 		vec3 cliff_normal_value = texture(cliff_normal, UV * cliff_texture_scale).rgb ;
