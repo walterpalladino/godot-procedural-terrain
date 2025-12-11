@@ -56,6 +56,8 @@ enum TerrainNoiseBase
 @export var terrain_mask_margin_offset = 0
 @export var terrain_mask_custom_curve : Curve = Curve.new()
 
+@export var terrain_smooth_faces : bool = false
+
 #@export_dir var terrain_data_folder : String
 
 
@@ -253,6 +255,7 @@ func generate_chunk_mesh(mesh_offset : Vector3, noise_map : PackedFloat32Array, 
 		terrain_height, 
 		chunk_size, 
 		chunk_id, 
+		terrain_smooth_faces,
 		lod, 
 		terrain_generate_mesh_lod,
 		terrain_generate_mesh_lod_angle
@@ -309,7 +312,7 @@ func generate_material() -> ShaderMaterial:
 
 
 
-func generate_mesh(map : PackedFloat32Array, terrain_size : int, mesh_offset : Vector3, terrain_height : float, chunk_size : int, chunk_id : Vector2, lod : int, generate_mesh_lod : bool = false, generate_mesh_lod_angle : float = 20.0) -> ArrayMesh:
+func generate_mesh(map : PackedFloat32Array, terrain_size : int, mesh_offset : Vector3, terrain_height : float, chunk_size : int, chunk_id : Vector2, smooth_faces : bool, lod : int, generate_mesh_lod : bool = false, generate_mesh_lod_angle : float = 20.0) -> ArrayMesh:
 	
 	var array_mesh = ArrayMesh.new()
 	var surface_tool = SurfaceTool.new()
@@ -334,7 +337,8 @@ func generate_mesh(map : PackedFloat32Array, terrain_size : int, mesh_offset : V
 
 			vertex_position += mesh_offset
 
-			surface_tool.set_smooth_group(-1)
+			if !smooth_faces:
+				surface_tool.set_smooth_group(-1)
 				
 			var color : Color = get_color_at(vertex_position)
 			surface_tool.set_color(color)
