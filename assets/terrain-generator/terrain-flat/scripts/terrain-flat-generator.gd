@@ -45,18 +45,29 @@ enum TerrainNoiseBase
 ## LOD is used to create the mesh skiping every 2^LOD units
 @export var terrain_lod : TerrainLOD = TerrainLOD.LOD_0
 
+
 ## Generete Mesh LOD is used to create mesh LOD adjustable with lod_bias
 @export var terrain_generate_mesh_lod : bool = false
 @export var terrain_generate_mesh_lod_angle : float = 20.0
 
 
-@export var terrain_height = 5
+@export var terrain_height : float = 32.0
+
+@export var terrain_smooth_faces : bool = false
+
+
+@export_group("Terrain remap")
+@export var terrain_remap_enabled : bool = false
+@export var terrain_remap_curve : Curve = Curve.new()
+
+
+
+@export_group("Terrain Island Settings")
 @export var terrain_offset : Vector3 = Vector3( 0.0, 0.0, 0.0 )
 @export var terrain_mask : TerrainMask = TerrainMask.None
 @export var terrain_mask_margin_offset = 0
 @export var terrain_mask_custom_curve : Curve = Curve.new()
 
-@export var terrain_smooth_faces : bool = false
 
 #@export_dir var terrain_data_folder : String
 
@@ -224,6 +235,9 @@ func generate_heightmap() -> PackedFloat32Array:
 			noise_map = NoiseUtils.generate_noise_map_perlin(noise_seed, fractal_octaves, fractal_lacunarity, fractal_octaves, noise_scale, terrain_size, noise_offset, soft_exp)
 		else :
 			noise_map = NoiseUtils.generate_noise_map_voronoi(noise_seed, fractal_octaves, fractal_lacunarity, fractal_octaves, noise_scale, terrain_size, noise_offset, soft_exp)
+
+		if terrain_remap_enabled:
+			noise_map = NoiseUtils.remap_values(noise_map, terrain_remap_curve)
 
 	if terrain_mask == TerrainMask.Circular:
 		noise_map = TerrainMapUtils.apply_circular_mask(noise_map, terrain_size, terrain_mask_margin_offset)

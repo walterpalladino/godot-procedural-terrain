@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dwxw3dc2qb8ux"]
+[gd_scene load_steps=13 format=3 uid="uid://dwxw3dc2qb8ux"]
 
 [ext_resource type="Material" uid="uid://ysy4gepk5boc" path="res://assets/godot-shaders/shaders/sky/materials/animated_sky_material.tres" id="1_rf8rv"]
 [ext_resource type="Script" uid="uid://br3yhbol5gumd" path="res://assets/terrain-generator/terrain-textured/scripts/terrain-generator.gd" id="2_63eqp"]
@@ -19,6 +19,10 @@ glow_enabled = true
 [sub_resource type="Curve" id="Curve_4ny01"]
 _data = [Vector2(0.00238095, 0), 0.0, 0.0, 0, 0, Vector2(0.457143, 0.178643), 0.299152, 0.299152, 0, 0, Vector2(0.85, 0.438434), 1.44126, 1.44126, 0, 0, Vector2(1, 0.942269), 0.226911, 0.0, 0, 0]
 point_count = 4
+
+[sub_resource type="Curve" id="Curve_owcw5"]
+_data = [Vector2(0.004228331, 0.0041071177), 0.0, 0.0, 0, 0, Vector2(0.5560254, 0.5658928), 0.0, 0.0, 0, 0, Vector2(0.98942924, 0.99071425), 0.0, 0.0, 0, 0]
+point_count = 3
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_7wscl"]
 height = 128.0
@@ -48,6 +52,8 @@ terrain_offset = Vector3(-512, 0, -512)
 terrain_mask_margin_offset = 16
 terrain_mask_custom_curve = SubResource("Curve_4ny01")
 default_material = ExtResource("4_53hhl")
+terrain_remap_enabled = true
+terrain_remap_curve = SubResource("Curve_owcw5")
 terrain_flat_height_level = 16.0
 rivers_enabled = true
 river_shore_soft_exp = 0.3

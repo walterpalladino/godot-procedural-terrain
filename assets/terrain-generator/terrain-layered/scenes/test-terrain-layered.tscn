@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://cmj65d1s15iuh"]
+[gd_scene load_steps=20 format=3 uid="uid://cmj65d1s15iuh"]
 
 [ext_resource type="Material" uid="uid://ysy4gepk5boc" path="res://assets/godot-shaders/shaders/sky/materials/animated_sky_material.tres" id="1_6sdod"]
 [ext_resource type="Script" uid="uid://dcd12w7nkxtxv" path="res://assets/terrain-generator/terrain-layered/scripts/terrain-layered-generator.gd" id="2_ahm53"]
@@ -24,7 +24,11 @@ glow_enabled = true
 
 [sub_resource type="Curve" id="Curve_ahm53"]
 
-[sub_resource type="Resource" id="Resource_jab1t"]
+[sub_resource type="Curve" id="Curve_jab1t"]
+_data = [Vector2(0.0021141693, 0.001785636), 0.0, 0.0, 0, 0, Vector2(0.19238901, 0.18982142), 0.0, 0.0, 0, 0, Vector2(0.40169132, 0.2478571), 0.0, 0.0, 0, 0, Vector2(0.5983087, 0.58214283), 0.0, 0.0, 0, 0, Vector2(0.97885835, 1), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="Resource" id="Resource_hwnm2"]
 script = ExtResource("3_aj58p")
 layers_size = 3
 
@@ -55,6 +59,7 @@ terrain_height_scale = 96.0
 terrain_offset = Vector3(-512, 0, -512)
 terrain_mask_margin_offset = 16
 terrain_mask_custom_curve = SubResource("Curve_ahm53")
+terrain_remap_curve = SubResource("Curve_jab1t")
 terrain_flat_height_level = 0.0
 terrain_layers = Array[ExtResource("4_uukje")]([ExtResource("5_io4y8"), ExtResource("6_io4y8"), ExtResource("7_g8ein")])
 terrain_cliff = ExtResource("7_byehe")
@@ -66,7 +71,7 @@ rivers_enabled = true
 river_shore_soft_exp = 0.5
 fractal_octaves = 3
 soft_exp = 1.59
-terrain_data = SubResource("Resource_jab1t")
+terrain_data = SubResource("Resource_hwnm2")
 shader_script = "uid://mi5le6202ucr"
 heightmap_file = "uid://dbtc3771uvapw"
 

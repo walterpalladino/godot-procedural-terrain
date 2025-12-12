@@ -59,6 +59,10 @@ enum TerrainNoiseBase
 
 @export var default_material : Material
 
+@export_group("Terrain Remap")
+@export var terrain_remap_enabled : bool = false
+@export var terrain_remap_curve : Curve = Curve.new()
+
 
 @export_group("Terrain Flat Settings")
 @export var terrain_flat_enabled : bool = false
@@ -198,10 +202,14 @@ func generate_heightmap() -> PackedFloat32Array:
 		value = clamp(value, 0.0, 1.0)
 		noise_map = NoiseUtils.generate_flat_map(terrain_size, value)
 	else:
+
 		if terrain_noise_base == TerrainNoiseBase.PerlinBased:
 			noise_map = NoiseUtils.generate_noise_map_perlin(noise_seed, fractal_octaves, fractal_lacunarity, fractal_octaves, noise_scale, terrain_size, noise_offset, soft_exp)
 		else :
 			noise_map = NoiseUtils.generate_noise_map_voronoi(noise_seed, fractal_octaves, fractal_lacunarity, fractal_octaves, noise_scale, terrain_size, noise_offset, soft_exp)
+
+		if terrain_remap_enabled:
+			noise_map = NoiseUtils.remap_values(noise_map, terrain_remap_curve)
 
 	if terrain_mask == TerrainMask.Circular:
 		noise_map = TerrainMapUtils.apply_circular_mask(noise_map, terrain_size, terrain_mask_margin_offset)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://b5obudqavj00w"]
+[gd_scene load_steps=20 format=3 uid="uid://b5obudqavj00w"]
 
 [ext_resource type="Material" uid="uid://ysy4gepk5boc" path="res://assets/godot-shaders/shaders/sky/materials/animated_sky_material.tres" id="1_v4jf2"]
 [ext_resource type="PackedScene" uid="uid://baxojuev5t28" path="res://assets/terrain-generator/prefabs/ocean-shore.tscn" id="2_or2ub"]
@@ -19,7 +19,13 @@ glow_enabled = true
 [sub_resource type="CylinderMesh" id="CylinderMesh_gsxm1"]
 height = 128.0
 
-[sub_resource type="Curve" id="Curve_v4jf2"]
+[sub_resource type="Curve" id="Curve_l2e8w"]
+_data = [Vector2(0, 0.0041071177), 0.0, 0.24193987, 0, 0, Vector2(0.21141648, 0.1875), 0.5390358, 0.5390358, 0, 0, Vector2(0.34672305, 0.20142853), 0.0, 0.0, 0, 0, Vector2(0.47357294, 0.5380357), 0.0, 0.0, 0, 0, Vector2(0.5560254, 0.5403571), 0.0, 0.0, 0, 0, Vector2(0.63002115, 0.88625), 0.0, 0.0, 0, 0, Vector2(0.87103593, 0.8932143), 0.0, 0.0, 0, 0, Vector2(0.9978858, 0.99535716), 0.9411738, 0.0, 0, 0]
+point_count = 8
+
+[sub_resource type="Curve" id="Curve_hnl81"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.33431518, 0.052820325), 0.0, 0.0, 0, 0, Vector2(0.4801178, 0.17058969), 1.1659262, 1.1659262, 0, 0, Vector2(0.5699558, 0.5023538), 0.77541447, 0.77541447, 0, 0, Vector2(0.6730486, 0.79707634), 0.0, 0.0, 0, 0, Vector2(0.90868926, 0.9130327), 1.0515064, 1.0515064, 0, 0, Vector2(0.99082565, 1), 0.0, 0.0, 0, 0]
+point_count = 7
 
 [sub_resource type="Resource" id="Resource_tek4l"]
 script = ExtResource("5_l2e8w")
@@ -91,16 +97,15 @@ transform = Transform3D(-0.8677654, 0, -0.496974, 0, 1, 0, 0.496974, 0, -0.86776
 script = ExtResource("4_hnl81")
 terrain_size = 1024
 terrain_lod = 8
-terrain_height = 64
+terrain_height = 64.0
+terrain_remap_curve = SubResource("Curve_l2e8w")
 terrain_offset = Vector3(-512, 0, -512)
-terrain_mask_custom_curve = SubResource("Curve_v4jf2")
-terrain_smooth_faces = true
+terrain_mask_custom_curve = SubResource("Curve_hnl81")
 terrain_flat_height_level = 16.0
 terrain_layers = Array[ExtResource("5_l2e8w")]([SubResource("Resource_tek4l"), SubResource("Resource_gsxm1"), SubResource("Resource_i8m5k"), SubResource("Resource_hnl81")])
 terrain_layer_blend = 2.0
 terrain_cliff = SubResource("Resource_1yx88")
 terraces = 8
-rivers_enabled = true
 rivers_seed = 767668686
 river_shore_soft_exp = 0.3
 noise_scale = 0.15

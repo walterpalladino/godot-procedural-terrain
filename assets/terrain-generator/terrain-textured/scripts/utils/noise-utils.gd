@@ -111,3 +111,11 @@ static func generate_flat_map(size:int, value : float = 1.0) -> PackedFloat32Arr
 			heights.append(value)
 
 	return heights
+
+
+static func remap_values(noise : PackedFloat32Array, curve : Curve) -> PackedFloat32Array :
+	
+	for n in range(noise.size()):
+		noise[n] = curve.sample(noise[n])
+
+	return noise
